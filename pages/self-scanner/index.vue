@@ -11,6 +11,7 @@ import * as XLSX from "xlsx"; // For Excel export
 import jsPDF from "jspdf"; // For PDF export
 
 // Refs to handle the file and validation result
+const documentType = ref(null);
 const documentFile = ref(null); // Stores the selected file
 const validationResult = ref(null); // Stores the validation result
 
@@ -44,14 +45,16 @@ const handleFileChange = async (event) => {
 // Handle document upload
 const uploadDocument = () => {
     
+  if (!documentType.value) {
+    alert("Please select a document type.");
+    return;
+  } 
   // Check if a file is selected
   if (!documentFile.value) {
     alert("Please select a file to upload.");
     return;
   } 
-
-
-  // Simulate file upload and validation
+   // Simulate file upload and validation
   console.log("Uploaded document:", documentFile.value.name);
   dummyValidation();
 };
@@ -92,6 +95,15 @@ const saveChanges = () => {
   alert("Changes saved successfully!");
   toggleEdit();
 };
+
+const docType = [
+    "URS - User Requirement Specification",
+    "SRS - System Requirment Specification",
+    "SDS - System Design Specification",
+    "SDD - Specification Data Design",
+    "User Manual",
+    "Test Script"
+  ];
 </script>
 
 <template>
@@ -103,17 +115,34 @@ const saveChanges = () => {
       </template>
 
       <template #body>
-        <!-- File Upload Input -->
-        <form>
-          <label for="document" class="block font-medium">Upload Document</label>
-          <input
+               
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+
+          <!-- <input
             type="file"
             id="document"
             class="mt-2 block w-full"
             accept=".pdf,.docx"
             @change="(e) => handleFileChange(e)"
+          /> -->
+
+          <FormKit
+            type="select"
+            v-model="documentType"
+            label="Document Type"
+            placeholder="Select a Document Type"
+            :options="docType"
+            validation="required"            
           />
-        </form>
+          <FormKit
+            type="file"
+            id="document"
+            label="Upload Document"
+            accept=".pdf,.docx"
+            @change="(e) => handleFileChange(e)"
+          />
+        </div>
+        
 
         <!-- Upload Button -->
         <button
@@ -201,7 +230,7 @@ const saveChanges = () => {
     </rs-card>
 
      <!-- Export Buttons -->
-     <div class="flex space-x-4">
+     <div class="flex space-x-4" v-if="validationResult">
       <button
         class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
         @click="exportToExcel"

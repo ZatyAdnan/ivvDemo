@@ -110,6 +110,8 @@ const closeVersionModal = () => {
                 :help="`Allowed types: PDF, DOCX`"
                 :validation-visibility="'blur'"
             />
+            
+            
 
             <!-- Validation Status -->
             <FormKit
