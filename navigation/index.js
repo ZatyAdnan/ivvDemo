@@ -123,11 +123,11 @@ export default [
         child: [
           {
             title: "Project",
-            path: "/setting/project",
+            path: "/configuration/project",
           },
           {
             title: "Contractor",
-            path: "/setting/contractor",
+            path: "/configuration/contractor",
           },
           
         ],
