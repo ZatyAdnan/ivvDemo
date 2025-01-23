@@ -221,6 +221,12 @@ const sortedDocumentsByProject = computed(() => {
   return grouped;
 });
 
+const collapsedProjects = reactive({});
+
+const toggleProjectCollapse = (projectName) => {
+  collapsedProjects[projectName] = !collapsedProjects[projectName];
+};
+
 // Handle document upload (dummy function)
 const handleUpload = async () => {
   if (!uploadForm.file) {
@@ -429,13 +435,16 @@ const healthMeter = ref(50); // Set a dummy value of 75%
                     </div>
                     <rs-card class="p-4 h-full" style="max-height: 55vh; overflow-y: auto;">
                         <div v-for="(docs, projectName) in sortedDocumentsByProject" :key="projectName">
-                            <div class="flex justify-between items-center mb-4 border-b-4">
+                            <div class="flex justify-between items-center mb-4 border-b-4 cursor-pointer" @click="toggleProjectCollapse(projectName)">
                                 <h4 class="text-lg font-semibold">{{ projectName }}</h4>
-                                <span class="text-sm text-gray-500">
-                                    {{ docs.length === 0 ? 'No Document' : docs.length === 1 ? '1 Document' : `${docs.length} Documents` }}
-                                </span>
+                                <div class="flex items-center">
+                                    <span class="text-sm text-gray-500 mr-2">
+                                        {{ docs.length === 0 ? 'No Document' : docs.length === 1 ? '1 Document' : `${docs.length} Documents` }}
+                                    </span>
+                                    <Icon :name="collapsedProjects[projectName] ? 'material-symbols:expand-more' : 'material-symbols:expand-less'" />
+                                </div>
                             </div>
-                            <div style="max-height: 40vh; overflow-y: auto;">
+                            <div v-show="!collapsedProjects[projectName]" style="max-height: 40vh; overflow-y: auto;">
                                 <table class="table-auto w-full border-collapse border border-gray-200 mb-4">
                                     <thead>
                                         <tr class="bg-gray-100">
