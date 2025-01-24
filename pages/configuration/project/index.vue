@@ -14,6 +14,7 @@ const documents = ref([
     validationStatus: "Validated",
     projectName: "Project Alpha",
     documentType: "Project Plan",
+    referenceFile: "Reference-Project-Plan.pdf",
     criteria: "Title: Project Plan\nIntroduction: Overview of the project\nConclusion: Summary of the project\nReferences: List of references used",
     versions: [
       { number: 1, date: "2024-11-15" },
@@ -28,6 +29,7 @@ const documents = ref([
     validationStatus: "Pending",
     projectName: "Project Beta",
     documentType: "Design Specification",
+    referenceFile: "Reference-Design-Specification.docx",
     criteria: "Title: Design Specification\nIntroduction: Design details\nConclusion: Design summary\nReferences: Design references",
     versions: [
       { number: 1, date: "2024-11-10" },
@@ -41,6 +43,7 @@ const documents = ref([
     validationStatus: "Validated",
     projectName: "Project Gamma",
     documentType: "Team Roster",
+    referenceFile: "Reference-Team-Roster.pdf",
     criteria: "Title: Team Roster\nIntroduction: Team members\nConclusion: Team summary\nReferences: Team references",
     versions: [
       { number: 1, date: "2024-11-01" },
@@ -55,6 +58,7 @@ const documents = ref([
     validationStatus: "Pending",
     projectName: "Project Alpha",
     documentType: "Requirements Document",
+    referenceFile: "Reference-Requirements-Document.pdf",
     criteria: "Title: Requirements Document\nIntroduction: Requirements overview\nConclusion: Requirements summary\nReferences: Requirements references",
     versions: [
       { number: 1, date: "2024-12-02" },
@@ -67,6 +71,7 @@ const documents = ref([
     validationStatus: "Validated",
     projectName: "Project Beta",
     documentType: "Test Plan",
+    referenceFile: "Reference-Test-Plan.docx",
     criteria: "Title: Test Plan\nIntroduction: Test details\nConclusion: Test summary\nReferences: Test references",
     versions: [
       { number: 1, date: "2024-12-03" },
@@ -79,6 +84,7 @@ const documents = ref([
     validationStatus: "Pending",
     projectName: "Project Gamma",
     documentType: "User Manual",
+    referenceFile: "Reference-User-Manual.pdf",
     criteria: "Title: User Manual\nIntroduction: User instructions\nConclusion: User summary\nReferences: User references",
     versions: [
       { number: 1, date: "2024-12-04" },
@@ -91,6 +97,7 @@ const documents = ref([
     validationStatus: "Pending",
     projectName: "Project Alpha",
     documentType: "Risk Assessment",
+    referenceFile: "Reference-Risk-Assessment.pdf",
     criteria: "Title: Risk Assessment\nIntroduction: Risk details\nConclusion: Risk summary\nReferences: Risk references",
     versions: [
       { number: 1, date: "2024-12-05" },
@@ -103,6 +110,7 @@ const documents = ref([
     validationStatus: "Validated",
     projectName: "Project Beta",
     documentType: "Budget Report",
+    referenceFile: "Reference-Budget-Report.xlsx",
     criteria: "Title: Budget Report\nIntroduction: Budget details\nConclusion: Budget summary\nReferences: Budget references",
     versions: [
       { number: 1, date: "2024-12-06" },
@@ -115,6 +123,7 @@ const documents = ref([
     validationStatus: "Pending",
     projectName: "Project Gamma",
     documentType: "Meeting Minutes",
+    referenceFile: "Reference-Meeting-Minutes.docx",
     criteria: "Title: Meeting Minutes\nIntroduction: Meeting details\nConclusion: Meeting summary\nReferences: Meeting references",
     versions: [
       { number: 1, date: "2024-12-07" },
@@ -127,6 +136,7 @@ const documents = ref([
     validationStatus: "Validated",
     projectName: "Project Alpha",
     documentType: "Project Closure",
+    referenceFile: "Reference-Project-Closure.pdf",
     criteria: "Title: Project Closure\nIntroduction: Closure details\nConclusion: Closure summary\nReferences: Closure references",
     versions: [
       { number: 1, date: "2024-12-08" },
@@ -139,6 +149,7 @@ const documents = ref([
     validationStatus: "Pending",
     projectName: "Project Beta",
     documentType: "Training Materials",
+    referenceFile: "Reference-Training-Materials.pptx",
     criteria: "Title: Training Materials\nIntroduction: Training details\nConclusion: Training summary\nReferences: Training references",
     versions: [
       { number: 1, date: "2024-12-09" },
@@ -151,6 +162,7 @@ const documents = ref([
     validationStatus: "Validated",
     projectName: "Project Gamma",
     documentType: "Stakeholder Analysis",
+    referenceFile: "Reference-Stakeholder-Analysis.pdf",
     criteria: "Title: Stakeholder Analysis\nIntroduction: Stakeholder details\nConclusion: Stakeholder summary\nReferences: Stakeholder references",
     versions: [
       { number: 1, date: "2024-12-10" },
@@ -238,6 +250,106 @@ const closeVersionModal = () => {
 };
 
 const router = useRouter(); // Import useRouter from Vue Router
+
+const showModalCenter = ref(false); // Toggles the view modal
+const viewDocument = ref(null); // Document selected for viewing
+
+// Open view modal
+const openViewModal = (document) => {
+  viewDocument.value = document;
+  showModalCenter.value = true;
+};
+
+// Close view modal
+const closeViewModal = () => {
+  viewDocument.value = null;
+  showModalCenter.value = false;
+};
+
+// Open edit modal
+const openEditModal = (document) => {
+  viewDocument.value = document;
+  showModalCenter.value = true;
+};
+
+const showDeleteModal = ref(false); // Toggles the delete confirmation modal
+const documentToDelete = ref({}); // Document selected for deletion
+
+// Open delete modal
+const openDeleteModal = (document) => {
+  documentToDelete.value = document;
+  showDeleteModal.value = true;
+};
+
+// Close delete modal
+const closeDeleteModal = () => {
+  documentToDelete.value = {};
+  showDeleteModal.value = false;
+};
+
+// Confirm delete document
+const confirmDeleteDocument = () => {
+  documents.value = documents.value.filter(doc => doc.id !== documentToDelete.value.id);
+  closeDeleteModal();
+};
+
+const saveDocumentChanges = () => {
+  const index = documents.value.findIndex(doc => doc.id === viewDocument.value.id);
+  if (index !== -1) {
+    documents.value[index] = { ...viewDocument.value };
+  }
+  closeEditModal();
+};
+
+const closeEditModal = () => {
+  viewDocument.value = null;
+  showModalCenter.value = false;
+};
+
+const showAddModal = ref(false); // Toggles the add document modal
+const newDocument = ref({
+  projectName: "Project Alpha", // Set default project name
+  documentType: "Project Plan", // Set default document type
+  referenceFile: "",
+  criteria: "",
+  versions: [],
+});
+
+// Open add modal
+const openAddModal = () => {
+  newDocument.value = {
+    projectName: "Project Alpha", // Set default project name
+    documentType: "Project Plan", // Set default document type
+    referenceFile: "",
+    criteria: "",
+    versions: [],
+  };
+  showAddModal.value = true;
+};
+
+// Close add modal
+const closeAddModal = () => {
+  newDocument.value = {
+    projectName: "",
+    documentType: "",
+    referenceFile: "",
+    criteria: "",
+    versions: [],
+  };
+  showAddModal.value = false;
+};
+
+// Save new document
+const saveNewDocument = () => {
+  newDocument.value.id = documents.value.length + 1;
+  newDocument.value.uploadDate = new Date().toISOString().split("T")[0];
+  newDocument.value.validationStatus = "Pending";
+  if (newDocument.value.referenceFile && newDocument.value.referenceFile.length > 0) {
+    newDocument.value.referenceFile = newDocument.value.referenceFile[0].name;
+  }
+  documents.value.push({ ...newDocument.value });
+  closeAddModal();
+};
 </script>
 
 <template>
@@ -277,10 +389,18 @@ const router = useRouter(); // Import useRouter from Vue Router
                     </div>
                     <rs-card class="p-4 h-full" style="max-height: 55vh; overflow-y: auto;">
                         <div v-for="(docs, projectName) in sortedDocumentsByProject" :key="projectName">
-                            <div class="flex justify-between items-center mb-4 border-b-4 cursor-pointer" @click="toggleProjectCollapse(projectName)">
+                            <div class="flex justify-between items-center my-4 border-b-4 cursor-pointer" @click="toggleProjectCollapse(projectName)">
                                 <h4 class="text-lg font-semibold">{{ projectName }}</h4>
                                 <div class="flex items-center">
-                                    <span class="text-sm text-gray-500 mr-2">
+                                    <rs-button
+                                        class="px-2 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600 inline-flex items-center justify-center mr-4 mb-2"
+                                        @click="openAddModal"
+                                        title="Add Document"
+                                    >
+                                        <Icon name="material-symbols:add" class="mr-2" title="Add"></Icon>
+                                        Add Document
+                                    </rs-button>
+                                    <span class="text-sm text-gray-500 ml-2">
                                         {{ docs.length === 0 ? 'No Document' : docs.length === 1 ? '1 Document' : `${docs.length} Documents` }}
                                     </span>
                                     <Icon :name="collapsedProjects[projectName] ? 'material-symbols:expand-more' : 'material-symbols:expand-less'" />
@@ -292,6 +412,7 @@ const router = useRouter(); // Import useRouter from Vue Router
                                         <tr class="bg-gray-100">
                                             <th class="px-4 py-2 text-left border border-gray-200">Project Name</th>
                                             <th class="px-4 py-2 text-left border border-gray-200">Document Type</th>
+                                            <th class="px-4 py-2 text-left border border-gray-200">Reference File</th>
                                             <th class="px-4 py-2 text-left border border-gray-200">Criteria</th>
                                             <th class="px-4 py-2 text-left border border-gray-200">Actions</th>
                                         </tr>
@@ -300,18 +421,19 @@ const router = useRouter(); // Import useRouter from Vue Router
                                         <tr v-for="doc in docs" :key="doc.id" class="hover:bg-gray-50">
                                             <td class="px-4 py-2 border border-gray-200">{{ doc.projectName }}</td>
                                             <td class="px-4 py-2 border border-gray-200">{{ doc.documentType }}</td>
+                                            <td class="px-4 py-2 border border-gray-200">{{ doc.referenceFile }}</td>
                                             <td class="px-4 py-2 border border-gray-200 whitespace-pre-wrap">{{ doc.criteria }}</td>
                                             <td class="px-4 py-2 border border-gray-200 space-x-2">
-                                                <NuxtLink
-                                                    :to="`/document-management/view?id=${doc.id}`"
+                                                <rs-button
                                                     class="px-2 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 inline-flex items-center justify-center"
+                                                    @click="openEditModal(doc)"
                                                     title="Edit Document"
                                                 >
                                                     <Icon name="material-symbols:edit" class="mr-2" title="Edit"></Icon>
-                                                </NuxtLink>
+                                                </rs-button>
                                                 <rs-button
                                                     class="px-2 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600 inline-flex items-center justify-center"
-                                                    @click="alert(`Deleting document ${doc.id}...`)"
+                                                    @click="openDeleteModal(doc)"
                                                     title="Delete Document"
                                                 >
                                                     <Icon name="material-symbols:delete" class="mr-2" title="Delete"></Icon>
@@ -349,6 +471,64 @@ const router = useRouter(); // Import useRouter from Vue Router
                     </li>
                 </ul>
             </template>
+        </rs-modal>
+        <rs-modal title="Edit Document " position="center" v-model="showModalCenter" ok-title="Save" :ok-callback="saveDocumentChanges">
+            <div v-if="viewDocument" class="space-y-4">
+                <div>
+                    <p><strong>Document Type:</strong> {{ viewDocument.documentType }}</p>
+                    <p><strong>Existing Reference File:</strong> {{ viewDocument.referenceFile }}</p>
+                </div>
+                <FormKit
+                    type="file"
+                    label="Reference File"
+                    accept=".pdf,.doc,.docx"
+                    help="Select a reference file."
+                />
+                <FormKit
+                    type="textarea"
+                    name="editDocumentCriteria"
+                    label="Criteria"
+                    rows="8"
+                    v-model="viewDocument.criteria"
+                />
+            </div>
+        </rs-modal>
+        <rs-modal title="Remove Document" position="center" v-model="showDeleteModal" ok-title="Remove" :ok-callback="confirmDeleteDocument">
+            <div >
+                <p>Are you sure you want to remove this document?</p>
+            </div>
+        </rs-modal>
+        <rs-modal title="Add Document" position="center" v-model="showAddModal" ok-title="Save" :ok-callback="saveNewDocument">
+            <div class="space-y-4">
+                <FormKit
+                    type="select"
+                    name="newDocumentProjectName"
+                    label="Project Name"
+                    :options="projectOptions"
+                    v-model="newDocument.projectName"
+                />
+                <FormKit
+                    type="select"
+                    name="newDocumentType"
+                    label="Document Type"
+                    :options="documentTypeOptions"
+                    v-model="newDocument.documentType"
+                />
+                <FormKit
+                    type="file"
+                    label="Reference File"
+                    accept=".pdf,.doc,.docx"
+                    help="Select a reference file."
+                    v-model="newDocument.referenceFile"
+                />
+                <FormKit
+                    type="textarea"
+                    name="newDocumentCriteria"
+                    label="Criteria"
+                    rows="8"
+                    v-model="newDocument.criteria"
+                />
+            </div>
         </rs-modal>
     </div>
 </template>
