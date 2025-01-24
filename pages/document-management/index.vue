@@ -9,11 +9,11 @@ definePageMeta({
 const documents = ref([
   {
     id: 1,
-    fileName: "Project-Plan.pdf",
+    fileName: "URS-Project-Alpha.pdf",
     uploadDate: "2024-12-01",
     validationStatus: "Validated",
     projectName: "Project Alpha",
-    documentType: "Project Plan",
+    documentType: "URS - User Requirement Specification",
     versions: [
       { number: 1, date: "2024-11-15" },
       { number: 2, date: "2024-11-20" },
@@ -22,11 +22,11 @@ const documents = ref([
   },
   {
     id: 2,
-    fileName: "Design-Specification.docx",
+    fileName: "SRS-Project-Beta.docx",
     uploadDate: "2024-12-01",
     validationStatus: "Pending",
     projectName: "Project Beta",
-    documentType: "Design Specification",
+    documentType: "SRS - System Requirment Specification",
     versions: [
       { number: 1, date: "2024-11-10" },
       { number: 2, date: "2024-12-01" },
@@ -34,11 +34,11 @@ const documents = ref([
   },
   {
     id: 3,
-    fileName: "Team-Roster.pdf",
+    fileName: "SDS-Project-Gamma.pdf",
     uploadDate: "2024-11-30",
     validationStatus: "Validated",
     projectName: "Project Gamma",
-    documentType: "Team Roster",
+    documentType: "SDS - System Design Specification",
     versions: [
       { number: 1, date: "2024-11-01" },
       { number: 2, date: "2024-11-15" },
@@ -47,29 +47,29 @@ const documents = ref([
   },
   {
     id: 4,
-    fileName: "Requirements-Document.pdf",
+    fileName: "SDD-Project-Alpha.pdf",
     uploadDate: "2024-12-02",
     validationStatus: "Pending",
     projectName: "Project Alpha",
-    documentType: "Requirements Document",
+    documentType: "SDD - Specification Data Design",
     versions: [
       { number: 1, date: "2024-12-02" },
     ],
   },
   {
     id: 5,
-    fileName: "Test-Plan.docx",
+    fileName: "Test-Script-Project-Beta.docx",
     uploadDate: "2024-12-03",
     validationStatus: "Validated",
     projectName: "Project Beta",
-    documentType: "Test Plan",
+    documentType: "Test Script",
     versions: [
       { number: 1, date: "2024-12-03" },
     ],
   },
   {
     id: 6,
-    fileName: "User-Manual.pdf",
+    fileName: "User-Manual-Project-Gamma.pdf",
     uploadDate: "2024-12-04",
     validationStatus: "Pending",
     projectName: "Project Gamma",
@@ -80,7 +80,7 @@ const documents = ref([
   },
   {
     id: 7,
-    fileName: "Risk-Assessment.pdf",
+    fileName: "Risk-Assessment-Project-Alpha.pdf",
     uploadDate: "2024-12-05",
     validationStatus: "Pending",
     projectName: "Project Alpha",
@@ -91,7 +91,7 @@ const documents = ref([
   },
   {
     id: 8,
-    fileName: "Budget-Report.xlsx",
+    fileName: "Budget-Report-Project-Beta.xlsx",
     uploadDate: "2024-12-06",
     validationStatus: "Validated",
     projectName: "Project Beta",
@@ -102,7 +102,7 @@ const documents = ref([
   },
   {
     id: 9,
-    fileName: "Meeting-Minutes.docx",
+    fileName: "Meeting-Minutes-Project-Gamma.docx",
     uploadDate: "2024-12-07",
     validationStatus: "Pending",
     projectName: "Project Gamma",
@@ -113,7 +113,7 @@ const documents = ref([
   },
   {
     id: 10,
-    fileName: "Project-Closure.pdf",
+    fileName: "Project-Closure-Project-Alpha.pdf",
     uploadDate: "2024-12-08",
     validationStatus: "Validated",
     projectName: "Project Alpha",
@@ -124,7 +124,7 @@ const documents = ref([
   },
   {
     id: 11,
-    fileName: "Training-Materials.pptx",
+    fileName: "Training-Materials-Project-Beta.pptx",
     uploadDate: "2024-12-09",
     validationStatus: "Pending",
     projectName: "Project Beta",
@@ -135,7 +135,7 @@ const documents = ref([
   },
   {
     id: 12,
-    fileName: "Stakeholder-Analysis.pdf",
+    fileName: "Stakeholder-Analysis-Project-Gamma.pdf",
     uploadDate: "2024-12-10",
     validationStatus: "Validated",
     projectName: "Project Gamma",
@@ -162,12 +162,12 @@ const projectOptions = [
 ];
 
 const documentTypeOptions = [
-  { value: "Project Plan", label: "Project Plan" },
-  { value: "Design Specification", label: "Design Specification" },
-  { value: "Team Roster", label: "Team Roster" },
-  { value: "Requirements Document", label: "Requirements Document" },
-  { value: "Test Plan", label: "Test Plan" },
+  { value: "URS - User Requirement Specification", label: "URS - User Requirement Specification" },
+  { value: "SRS - System Requirment Specification", label: "SRS - System Requirment Specification" },
+  { value: "SDS - System Design Specification", label: "SDS - System Design Specification" },
+  { value: "SDD - Specification Data Design", label: "SDD - Specification Data Design" },
   { value: "User Manual", label: "User Manual" },
+  { value: "Test Script", label: "Test Script" },
 ];
 
 const filterProjectOptions = [
@@ -274,6 +274,30 @@ const showModalHideOverlay = ref(false);
 
 // Dummy health meter value
 const healthMeter = ref(50); // Set a dummy value of 75%
+
+const showEditDocumentModal = ref(false); // Initialize showEditDocumentModal
+const editDocument = reactive({
+  fileName: "",
+  validationStatus: "",
+  projectName: "",
+  documentType: "",
+}); // Initialize editDocument
+
+const openEditDocumentModal = (document) => {
+  editDocument.fileName = document.fileName;
+  editDocument.validationStatus = document.validationStatus;
+  editDocument.projectName = document.projectName;
+  editDocument.documentType = document.documentType;
+  showEditDocumentModal.value = true;
+};
+
+const saveEditDocument = () => {
+  const index = documents.value.findIndex(doc => doc.fileName === editDocument.fileName);
+  if (index !== -1) {
+    documents.value[index] = { ...editDocument };
+    showEditDocumentModal.value = false;
+  }
+};
 </script>
 
 <template>
@@ -506,6 +530,36 @@ const healthMeter = ref(50); // Set a dummy value of 75%
                     </li>
                 </ul>
             </template>
+        </rs-modal>
+        <!-- Edit Document Modal -->
+        <rs-modal title="Edit Document" position="center" v-model="showEditDocumentModal" :ok-callback="saveEditDocument" ok-title="Save">
+            <FormKit
+                type="text"
+                name="fileName"
+                label="File Name"
+                v-model="editDocument.fileName"
+            />
+            <FormKit
+                type="select"
+                name="validationStatus"
+                label="Validation Status"
+                :options="[{ value: 'Pending', label: 'Pending' }, { value: 'Validated', label: 'Validated' }]"
+                v-model="editDocument.validationStatus"
+            />
+            <FormKit
+                type="select"
+                name="projectName"
+                label="Project Name"
+                :options="projectOptions"
+                v-model="editDocument.projectName"
+            />
+            <FormKit
+                type="select"
+                name="documentType"
+                label="Document Type"
+                :options="documentTypeOptions"
+                v-model="editDocument.documentType"
+            />
         </rs-modal>
     </div>
 </template>
