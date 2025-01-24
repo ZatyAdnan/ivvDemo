@@ -84,7 +84,7 @@ const documents = ref([
     uploadDate: "2024-12-05",
     validationStatus: "Pending",
     projectName: "Project Alpha",
-    documentType: "Risk Assessment",
+    documentType: "SDS - System Design Specification", // Changed to match documentTypeOptions
     versions: [
       { number: 1, date: "2024-12-05" },
     ],
@@ -95,7 +95,7 @@ const documents = ref([
     uploadDate: "2024-12-06",
     validationStatus: "Validated",
     projectName: "Project Beta",
-    documentType: "Budget Report",
+    documentType: "SDS - System Design Specification", // Changed to match documentTypeOptions
     versions: [
       { number: 1, date: "2024-12-06" },
     ],
@@ -106,7 +106,7 @@ const documents = ref([
     uploadDate: "2024-12-07",
     validationStatus: "Pending",
     projectName: "Project Gamma",
-    documentType: "Meeting Minutes",
+    documentType: "SDS - System Design Specification", // Changed to match documentTypeOptions
     versions: [
       { number: 1, date: "2024-12-07" },
     ],
@@ -117,7 +117,7 @@ const documents = ref([
     uploadDate: "2024-12-08",
     validationStatus: "Validated",
     projectName: "Project Alpha",
-    documentType: "Project Closure",
+    documentType: "SDS - System Design Specification", // Changed to match documentTypeOptions
     versions: [
       { number: 1, date: "2024-12-08" },
     ],
@@ -128,7 +128,7 @@ const documents = ref([
     uploadDate: "2024-12-09",
     validationStatus: "Pending",
     projectName: "Project Beta",
-    documentType: "Training Materials",
+    documentType: "SDS - System Design Specification", // Changed to match documentTypeOptions
     versions: [
       { number: 1, date: "2024-12-09" },
     ],
@@ -139,12 +139,27 @@ const documents = ref([
     uploadDate: "2024-12-10",
     validationStatus: "Validated",
     projectName: "Project Gamma",
-    documentType: "Stakeholder Analysis",
+    documentType: "SDS - System Design Specification", // Changed to match documentTypeOptions
     versions: [
       { number: 1, date: "2024-12-10" },
     ],
   },
 ]);
+
+const uniqueDocuments = computed(() => {
+  const uniqueDocs = [];
+  const seenTypes = new Set();
+
+  documents.value.forEach(doc => {
+    const key = `${doc.projectName}-${doc.documentType}`;
+    if (!seenTypes.has(key)) {
+      seenTypes.add(key);
+      uniqueDocs.push(doc);
+    }
+  });
+
+  return uniqueDocs;
+});
 
 const selectedDocument = ref(null); // Document selected for version tracking
 const showVersionModal = ref(false); // Toggles the version modal
@@ -169,6 +184,8 @@ const documentTypeOptions = [
   { value: "User Manual", label: "User Manual" },
   { value: "Test Script", label: "Test Script" },
 ];
+
+const documentTypeOrder = documentTypeOptions.map(option => option.value);
 
 const filterProjectOptions = [
   { value: "", label: "All" },
@@ -202,11 +219,7 @@ const filteredDocuments = computed(() => {
 });
 
 const sortedDocumentsByProject = computed(() => {
-  if (filter.projectName) {
-    return { [filter.projectName]: filteredDocuments.value };
-  }
-
-  const grouped = filteredDocuments.value.reduce((acc, doc) => {
+  const grouped = uniqueDocuments.value.reduce((acc, doc) => {
     if (!acc[doc.projectName]) {
       acc[doc.projectName] = [];
     }
@@ -215,7 +228,7 @@ const sortedDocumentsByProject = computed(() => {
   }, {});
 
   Object.keys(grouped).forEach(project => {
-    grouped[project].sort((a, b) => a.documentType.localeCompare(b.documentType));
+    grouped[project].sort((a, b) => documentTypeOrder.indexOf(a.documentType) - documentTypeOrder.indexOf(b.documentType));
   });
 
   return grouped;
@@ -274,30 +287,6 @@ const showModalHideOverlay = ref(false);
 
 // Dummy health meter value
 const healthMeter = ref(50); // Set a dummy value of 75%
-
-const showEditDocumentModal = ref(false); // Initialize showEditDocumentModal
-const editDocument = reactive({
-  fileName: "",
-  validationStatus: "",
-  projectName: "",
-  documentType: "",
-}); // Initialize editDocument
-
-const openEditDocumentModal = (document) => {
-  editDocument.fileName = document.fileName;
-  editDocument.validationStatus = document.validationStatus;
-  editDocument.projectName = document.projectName;
-  editDocument.documentType = document.documentType;
-  showEditDocumentModal.value = true;
-};
-
-const saveEditDocument = () => {
-  const index = documents.value.findIndex(doc => doc.fileName === editDocument.fileName);
-  if (index !== -1) {
-    documents.value[index] = { ...editDocument };
-    showEditDocumentModal.value = false;
-  }
-};
 </script>
 
 <template>
@@ -530,36 +519,6 @@ const saveEditDocument = () => {
                     </li>
                 </ul>
             </template>
-        </rs-modal>
-        <!-- Edit Document Modal -->
-        <rs-modal title="Edit Document" position="center" v-model="showEditDocumentModal" :ok-callback="saveEditDocument" ok-title="Save">
-            <FormKit
-                type="text"
-                name="fileName"
-                label="File Name"
-                v-model="editDocument.fileName"
-            />
-            <FormKit
-                type="select"
-                name="validationStatus"
-                label="Validation Status"
-                :options="[{ value: 'Pending', label: 'Pending' }, { value: 'Validated', label: 'Validated' }]"
-                v-model="editDocument.validationStatus"
-            />
-            <FormKit
-                type="select"
-                name="projectName"
-                label="Project Name"
-                :options="projectOptions"
-                v-model="editDocument.projectName"
-            />
-            <FormKit
-                type="select"
-                name="documentType"
-                label="Document Type"
-                :options="documentTypeOptions"
-                v-model="editDocument.documentType"
-            />
         </rs-modal>
     </div>
 </template>
