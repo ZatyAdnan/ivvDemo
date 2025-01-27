@@ -126,6 +126,19 @@ const saveChanges = () => {
   toggleEdit();
 };
 
+// Add a new row to the checklist
+const addNewRow = () => {
+  validationResult.value.checklist.push({
+    section: "",
+    details: "",
+    referenceCode: "",
+    classification: "",
+    isComplete: false,
+    errorCategory: "",
+    notes: ""
+  });
+};
+
 const docType = [
     "URS - User Requirement Specification",
     "SRS - System Requirment Specification",
@@ -183,7 +196,9 @@ const saveColumnNames = () => {
           <rs-button
             @click.prevent="uploadDocument"
           >
+          <Icon name="material-symbols:check" class="mr-2" title="Delete"></Icon>
             Validate Document
+            
           </rs-button>
         </div>
       </template>
@@ -218,6 +233,7 @@ const saveColumnNames = () => {
               class="text-sm"
               @click="toggleEdit"
             >
+            
               {{ isEditing ? "Done Editing" : "Edit Checklist" }}
             </rs-button>
           </h4>
@@ -225,23 +241,77 @@ const saveColumnNames = () => {
           <div v-if="isEditing">
            <rs-card class="p-4">
             <div class="mb-4">
-              <h5 class="font-medium text-gray-700 ml-6 mb-2">Edit Column Names:</h5>
-              <ul class="list-disc pl-6 space-y-2">
-                <li v-for="(name, key) in columnNames" :key="key" class="flex items-center space-x-4">
-                  <input
-                    type="text"
-                    class="border rounded-lg px-2 py-1 w-full"
-                    v-model="columnNames[key]"
-                  />
-                </li>
-              </ul>
-              <div class="flex justify-end mt-4">
-                <rs-button 
-                  @click="saveColumnNames"
-                >
-                  Save Column Names
+              <h5 class="font-medium text-gray-700 ml-6 mb-2">Edit Checklist:</h5>
+              <div class="overflow-x-auto">
+                <div class="max-h-96 overflow-y-auto">
+                  <table class="min-w-full bg-white">
+                    <thead>
+                      <tr>
+                        <th class="py-2 px-4 border-b">{{ columnNames.section }}</th>
+                        <th class="py-2 px-4 border-b">{{ columnNames.details }}</th>
+                        <th class="py-2 px-4 border-b">{{ columnNames.referenceCode }}</th>
+                        <th class="py-2 px-4 border-b">{{ columnNames.classification }}</th>
+                        <th class="py-2 px-4 border-b">{{ columnNames.errorCategory }}</th>
+                        <th class="py-2 px-4 border-b">{{ columnNames.notes }}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(item, index) in validationResult.checklist" :key="index">
+                        <td class="py-2 px-4 border-b">
+                          <input
+                            type="text"
+                            class="border rounded-lg px-2 py-1 w-full"
+                            v-model="item.section"
+                          />
+                        </td>
+                        <td class="py-2 px-4 border-b">
+                          <textarea
+                            class="border rounded-lg px-2 py-1 w-full h-32"
+                            v-model="item.details"
+                          ></textarea>
+                        </td>
+                        <td class="py-2 px-4 border-b">
+                          <input
+                            type="text"
+                            class="border rounded-lg px-2 py-1 w-full"
+                            v-model="item.referenceCode"
+                          />
+                        </td>
+                        <td class="py-2 px-4 border-b">
+                          <input
+                            type="text"
+                            class="border rounded-lg px-2 py-1 w-full"
+                            v-model="item.classification"
+                          />
+                        </td>
+                        <td class="py-2 px-4 border-b">
+                          <input
+                            type="text"
+                            class="border rounded-lg px-2 py-1 w-full"
+                            v-model="item.errorCategory"
+                          />
+                        </td>
+                        <td class="py-2 px-4 border-b">
+                          <input
+                            type="text"
+                            class="border rounded-lg px-2 py-1 w-full"
+                            v-model="item.notes"
+                          />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="flex justify-center mt-4">
+                <rs-button class="w-full py-4" @click="addNewRow">
+                  <Icon name="material-symbols:add" class="mr-2" title="Delete"></Icon>
+                  Add New Row
                 </rs-button>
               </div>
+            </div>
+            <div class="flex justify-end mt-4">
+              <rs-button @click="saveChanges"> <Icon name="material-symbols:save" class="mr-2" title="Delete"></Icon>Save Changes</rs-button>
             </div>
            </rs-card>
           </div>
@@ -274,6 +344,8 @@ const saveColumnNames = () => {
               <rs-button
                 @click="exportToExcel"
               >
+              <Icon name="material-symbols:file-export" class="mr-2" title="Delete"></Icon>
+             
                 Export to Excel
               </rs-button>
             </div>
