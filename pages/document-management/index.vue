@@ -170,12 +170,6 @@ const uploadForm = reactive({
   documentType: "Project Plan", // Add documentType to the upload form
 }); // Form state for document upload
 
-const projectOptions = [
-  { value: "Project Alpha", label: "Project Alpha" },
-  { value: "Project Beta", label: "Project Beta" },
-  { value: "Project Gamma", label: "Project Gamma" },
-];
-
 const documentTypeOptions = [
   { value: "URS - User Requirement Specification", label: "URS - User Requirement Specification" },
   { value: "SRS - System Requirment Specification", label: "SRS - System Requirment Specification" },
@@ -287,6 +281,14 @@ const showModalHideOverlay = ref(false);
 
 // Dummy health meter value
 const healthMeter = ref(50); // Set a dummy value of 75%
+</script>
+
+<script>
+export const projectOptions = [
+  { value: "Project Alpha", label: "Project Alpha" },
+  { value: "Project Beta", label: "Project Beta" },
+  { value: "Project Gamma", label: "Project Gamma" },
+];
 </script>
 
 <template>

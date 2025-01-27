@@ -377,17 +377,19 @@ const saveNewDocument = () => {
                             :options="filterDocumentTypeOptions"
                             v-model="filter.documentType"
                         />
-                        <div class="flex justify-end">
+                       
+                    </div>
+                    <rs-card class="p-4 h-full" style="max-height: 55vh; overflow-y: auto;">
+                      <div class="flex justify-between mb-4 border-b-4">
+                        <h3 class="text-lg font-semibold">List of Projects</h3>
                             <rs-button
-                                class="px-4 py-2"
+                                class="px-4 py-1 mb-2"
                                 @click="router.push('/configuration/project/add')" 
                             >
                             <Icon name="material-symbols:add" class="mr-2"></Icon>
                                 Add New Project
                             </rs-button>
                         </div>
-                    </div>
-                    <rs-card class="p-4 h-full" style="max-height: 55vh; overflow-y: auto;">
                         <div v-for="(docs, projectName) in sortedDocumentsByProject" :key="projectName">
                             <div class="flex justify-between items-center my-4 border-b-4 cursor-pointer" @click="toggleProjectCollapse(projectName)">
                                 <h4 class="text-lg font-semibold">{{ projectName }}</h4>
