@@ -167,7 +167,7 @@ const saveColumnNames = () => {
 };
 
 const errorCategories = ["BAHARU (NEW) TIDAK BETUL (INCORRECT)", "Tidak Betul (Incorrect)"];
-const classifications = ["MAJOR", "Baharu (New)"];
+const classifications = ["MAJOR", "MINOR"];
 </script>
 
 <template>
