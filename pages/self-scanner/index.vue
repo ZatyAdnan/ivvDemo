@@ -139,6 +139,11 @@ const addNewRow = () => {
   });
 };
 
+// Delete a row from the checklist
+const deleteRow = (index) => {
+  validationResult.value.checklist.splice(index, 1);
+};
+
 const docType = [
     "URS - User Requirement Specification",
     "SRS - System Requirment Specification",
@@ -160,6 +165,9 @@ const columnNames = ref({
 const saveColumnNames = () => {
   alert("Column names saved successfully!");
 };
+
+const errorCategories = ["BAHARU (NEW) TIDAK BETUL (INCORRECT)", "Tidak Betul (Incorrect)"];
+const classifications = ["MAJOR", "Baharu (New)"];
 </script>
 
 <template>
@@ -253,6 +261,7 @@ const saveColumnNames = () => {
                         <th class="py-2 px-4 border-b">{{ columnNames.classification }}</th>
                         <th class="py-2 px-4 border-b">{{ columnNames.errorCategory }}</th>
                         <th class="py-2 px-4 border-b">{{ columnNames.notes }}</th>
+                        <th class="py-2 px-4 border-b">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -278,18 +287,24 @@ const saveColumnNames = () => {
                           />
                         </td>
                         <td class="py-2 px-4 border-b">
-                          <input
-                            type="text"
+                          <select
                             class="border rounded-lg px-2 py-1 w-full"
                             v-model="item.classification"
-                          />
+                          >
+                            <option v-for="option in classifications" :key="option" :value="option">
+                              {{ option }}
+                            </option>
+                          </select>
                         </td>
                         <td class="py-2 px-4 border-b">
-                          <input
-                            type="text"
+                          <select
                             class="border rounded-lg px-2 py-1 w-full"
                             v-model="item.errorCategory"
-                          />
+                          >
+                            <option v-for="option in errorCategories" :key="option" :value="option">
+                              {{ option }}
+                            </option>
+                          </select>
                         </td>
                         <td class="py-2 px-4 border-b">
                           <input
@@ -297,6 +312,12 @@ const saveColumnNames = () => {
                             class="border rounded-lg px-2 py-1 w-full"
                             v-model="item.notes"
                           />
+                        </td>
+                        <td class="py-2 px-4 border-b">
+                          <rs-button class="text-red-500" @click="deleteRow(index)">
+                            <Icon name="material-symbols:delete" class="mr-2"></Icon>
+                            Delete
+                          </rs-button>
                         </td>
                       </tr>
                     </tbody>
