@@ -21,10 +21,57 @@ const dummyValidation = () => {
     score: 72, // Health Meter score (0-100)
     color: "yellow", // Health Meter color based on score
     checklist: [
-      { section: "Title", isComplete: true },
-      { section: "Introduction", isComplete: true },
-      { section: "Conclusion", isComplete: false },
-      { section: "References", isComplete: false },
+      {
+        section: "3.5. Reka Bentuk Fungsi Sistem",
+        details: `Isu
+Struktur Use Case Diagram di SRS Forensik telah disediakan tanpa mengikut standard yang boleh digunapakai secara terus mengikut formula yang ditetapkan oleh CORRAD. 
+
+Oleh itu pemetaan untuk penghasilan satu sequence diagram daripada satu Use Case ID adalah tidak betul kerana ia tidak menghasilkan satu transaksi keperluan bisnes yang lengkap.
+
+Sebagai contoh:
+UC-FOR-01.2: HADIR KE KAUNTER > SD-FOR-01.2: Hadir ke Kaunter
+
+penghasilan satu sequence diagram ke atas satu action untuk <Hadir ke kaunter> sahaja adalah bukan satu fungsi keperluan bisnes lengkap. 
+
+Contoh 1 fungsi bisnes lengkap:
+membuat permohonan Visa (1 fungsi) = 1 SQ Diagram.
+Di dalam 1 sequence diagram untuk membuat permohonan Visa tersebut perlu ada:
+i) permohonan visa berjaya
+ii) permhonan visa tidak berjaya
+
+Dan transaksi fungsi permohonan visa tersebut perlu menyentuh semua lifeline yang diperlukan untuk menghasilkan satu transaksi lengkap samada transaksi berjaya atau tidak berjaya. (API, table, internal &external integrations, error message code, etc)`,
+        referenceCode: "",
+        classification: "MAJOR",
+        isComplete: false,
+        errorCategory: "BAHARU (NEW) TIDAK BETUL (INCORRECT)",
+        notes: ""
+      },
+      {
+        section: "3.5. Reka Bentuk Fungsi Sistem",
+        details: `Isu lifeline pada Seguence Diagram yang diperlukan untuk menghasilkan satu transaksi fungsi bisnes tidak lengkap.
+
+Bagi menghasilkan satu transaksi lengkap di Sequence Diagram, semua komponen terlibat perlu dicapai.
+
+Bagi keperluan Reka Bentuk NIISe, satu transaksi lengkap akan melibatkan komponen berikut:
+i. API
+ii. Integrasi Dalaman (across internal modules)
+iii. Integrasi Luaran (sistem agensi luar)
+iv. Keperluan untuk jana notifikasi ke dashboard aktor yang terlibat
+v. Pangkalan Data
+
+Expected:
+Sequence Diagram perlu ada lifeline berikut:
+i. lifeline API
+ii. lifeline integrasi dalaman
+iii. lifeline integrasi Luaran
+iv lifeline webserver (untuk jana notifikasi ke dashboard aktor dan jana error code message)
+v. lifeline Pangkalan Data`,
+        referenceCode: "KM123",
+        classification: "Baharu (New)",
+        isComplete: false,
+        errorCategory: "Tidak Betul (Incorrect)",
+        notes: ""
+      },
     ],
   };
 };
@@ -69,25 +116,8 @@ const toggleEdit = () => {
 
 // Save checklist to Excel
 const exportToExcel = () => {
-  const worksheet = XLSX.utils.json_to_sheet(validationResult.value.checklist);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Readiness Checklist");
-  XLSX.writeFile(workbook, "Readiness_Checklist.xlsx");
-};
-
-// Save checklist to PDF
-const exportToPDF = () => {
-  const pdf = new jsPDF();
-  pdf.setFont("helvetica", "bold");
-  pdf.text("Readiness Checklist", 10, 10);
-
-  // Add checklist items to the PDF
-  validationResult.value.checklist.forEach((item, index) => {
-    pdf.setFont("helvetica", "normal");
-    pdf.text(`${index + 1}. ${item.section}: ${item.isComplete ? "Complete" : "Incomplete"}`, 10, 20 + index * 10);
-  });
-
-  pdf.save("Readiness_Checklist.pdf");
+  const fileUrl = '/Borang_Maklumbalas.xlsx'; // Path to the file in the public folder
+  saveAs(fileUrl, 'Borang_Maklumbalas.xlsx');
 };
 
 // Save changes (if necessary)
@@ -104,35 +134,39 @@ const docType = [
     "User Manual",
     "Test Script"
   ];
+
+const columnNames = ref({
+  section: "Lokasi (Muka Surat / Seksyen)",
+  details: "Perincian Semakan",
+  referenceCode: "Kod Rujukan KM",
+  classification: "Klasifikasi Penemuan",
+  errorCategory: "Kategori Kesalahan",
+  notes: "Catatan"
+});
+
+const saveColumnNames = () => {
+  alert("Column names saved successfully!");
+};
 </script>
 
 <template>
-  <div>
+  <div class="p-6 bg-gray-100 min-h-screen">
     <!-- File Upload Card -->
-    <rs-card>
+    <rs-card class="mb-6 shadow-lg rounded-lg">
       <template #header>
-        <h2 class="text-lg font-semibold">Document Self-Scanner</h2>
+        <h2 class="text-xl font-bold text-gray-800">Document Self-Scanner</h2>
       </template>
 
       <template #body>
-               
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-
-          <!-- <input
-            type="file"
-            id="document"
-            class="mt-2 block w-full"
-            accept=".pdf,.docx"
-            @change="(e) => handleFileChange(e)"
-          /> -->
-
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormKit
             type="select"
             v-model="documentType"
             label="Document Type"
             placeholder="Select a Document Type"
             :options="docType"
-            validation="required"            
+            validation="required"
+            class="w-full"
           />
           <FormKit
             type="file"
@@ -140,42 +174,36 @@ const docType = [
             label="Upload Document"
             accept=".pdf,.docx"
             @change="(e) => handleFileChange(e)"
+            class="w-full"
           />
         </div>
-        
 
         <!-- Upload Button -->
-        <button
-          class="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-          @click.prevent="uploadDocument"
-        >
-          Validate Document
-        </button>
+        <div class="flex justify-end mt-4">
+          <rs-button
+            @click.prevent="uploadDocument"
+          >
+            Validate Document
+          </rs-button>
+        </div>
       </template>
     </rs-card>
 
     <!-- Validation Results Card -->
-    <rs-card v-if="validationResult">
+    <rs-card v-if="validationResult" class="shadow-lg rounded-lg">
       <template #header>
-        <h3 class="text-lg font-semibold">Validation Results</h3>
+        <h3 class="text-xl font-bold text-gray-800">Validation Results</h3>
       </template>
 
       <template #body>
         <!-- Health Meter -->
-        <div class="mb-4">
-          <h4 class="font-medium">Health Meter:</h4>
-          <div
-            class="flex items-center space-x-4 mt-2"
-            :class="{
-              'text-green-600': validationResult.score > 80,
-              'text-yellow-600': validationResult.score > 50 && validationResult.score <= 80,
-              'text-red-600': validationResult.score <= 50,
-            }"
-          >
-            <span>{{ validationResult.score }}% Complete</span>
-            <div class="w-full h-4 bg-gray-200 rounded">
+        <div class="mb-6">
+          <h4 class="font-medium text-gray-700">Health Meter:</h4>
+          <div class="flex items-center space-x-4 mt-2">
+            <span class="text-lg font-semibold">{{ validationResult.score }}% Complete</span>
+            <div class="w-full h-4 bg-gray-300 rounded-full overflow-hidden">
               <div
-                class="h-4 rounded"
+                class="h-4 rounded-full"
                 :style="{ width: validationResult.score + '%', backgroundColor: validationResult.color }"
               ></div>
             </div>
@@ -184,65 +212,74 @@ const docType = [
 
         <!-- Readiness Checklist -->
         <div>
-            <h4 class="font-medium mb-2 flex justify-between items-center">
-                Readiness Checklist:
-                <button
-                class="text-sm bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-                @click="toggleEdit"
-                >
-                {{ isEditing ? "Done Editing" : "Edit Checklist" }}
-                </button>
-            </h4>
+          <h4 class="font-medium mb-4 flex justify-between items-center text-gray-700">
+            Readiness Checklist:
+            <rs-button
+              class="text-sm"
+              @click="toggleEdit"
+            >
+              {{ isEditing ? "Done Editing" : "Edit Checklist" }}
+            </rs-button>
+          </h4>
           <!-- Editable or View-Only Checklist -->
-          <ul class="list-disc pl-6 space-y-2">
-            <li v-for="(item, index) in validationResult.checklist" :key="index" class="flex items-center space-x-4">
-              <template v-if="isEditing">
-                <input
-                  type="text"
-                  class="border rounded px-2 py-1 w-1/2"
-                  v-model="item.section"
-                />
-                <select v-model="item.isComplete" class="border rounded px-2 py-1">
-                  <option :value="true">Complete</option>
-                  <option :value="false">Incomplete</option>
-                </select>
-              </template>
-              <template v-else>
-                <span
-                  :class="{ 'text-green-600': item.isComplete, 'text-red-600': !item.isComplete }"
+          <div v-if="isEditing">
+           <rs-card class="p-4">
+            <div class="mb-4">
+              <h5 class="font-medium text-gray-700 ml-6 mb-2">Edit Column Names:</h5>
+              <ul class="list-disc pl-6 space-y-2">
+                <li v-for="(name, key) in columnNames" :key="key" class="flex items-center space-x-4">
+                  <input
+                    type="text"
+                    class="border rounded-lg px-2 py-1 w-full"
+                    v-model="columnNames[key]"
+                  />
+                </li>
+              </ul>
+              <div class="flex justify-end mt-4">
+                <rs-button 
+                  @click="saveColumnNames"
                 >
-                  {{ item.section }}: {{ item.isComplete ? "Complete" : "Incomplete" }}
-                </span>
-              </template>
-            </li>
-          </ul>
-
-          <!-- Save Changes Button -->
-          <button 
-            v-if="isEditing"
-            class="mt-8 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
-            @click="saveChanges"
-          >
-            Save Changes
-          </button>
+                  Save Column Names
+                </rs-button>
+              </div>
+            </div>
+           </rs-card>
+          </div>
+          <div v-else class="overflow-x-auto">
+            <div class="max-h-96 overflow-y-auto">
+              <table class="min-w-full bg-white">
+                <thead>
+                  <tr>
+                    <th class="py-2 px-4 border-b">{{ columnNames.section }}</th>
+                    <th class="py-2 px-4 border-b">{{ columnNames.details }}</th>
+                    <th class="py-2 px-4 border-b">{{ columnNames.referenceCode }}</th>
+                    <th class="py-2 px-4 border-b">{{ columnNames.classification }}</th>
+                    <th class="py-2 px-4 border-b">{{ columnNames.errorCategory }}</th>
+                    <th class="py-2 px-4 border-b">{{ columnNames.notes }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in validationResult.checklist" :key="index">
+                    <td class="py-2 px-4 border-b">{{ item.section }}</td>
+                    <td class="py-2 px-4 border-b whitespace-pre-line">{{ item.details }}</td>
+                    <td class="py-2 px-4 border-b">{{ item.referenceCode }}</td>
+                    <td class="py-2 px-4 border-b">{{ item.classification }}</td>
+                    <td class="py-2 px-4 border-b">{{ item.errorCategory }}</td>
+                    <td class="py-2 px-4 border-b">{{ item.notes }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="flex space-x-4 mt-6 justify-end" v-if="validationResult">
+              <rs-button
+                @click="exportToExcel"
+              >
+                Export to Excel
+              </rs-button>
+            </div>
+          </div>
         </div>
       </template>
     </rs-card>
-
-     <!-- Export Buttons -->
-     <div class="flex space-x-4" v-if="validationResult">
-      <button
-        class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-        @click="exportToExcel"
-      >
-        Export to Excel
-      </button>
-      <button
-        class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-        @click="exportToPDF"
-      >
-        Export to PDF
-      </button>
-    </div>
   </div>
 </template>
