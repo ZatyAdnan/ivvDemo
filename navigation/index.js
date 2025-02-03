@@ -3,13 +3,13 @@ export default [
     header: "",
     description: "",
     child: [
-      {
-        title: "Dashboard",
-        path: "/dashboard",
-        icon: "ic:outline-dashboard",
-        child: [],
-        meta: {},
-      },
+      // {
+      //   title: "Dashboard",
+      //   path: "/dashboard",
+      //   icon: "ic:outline-dashboard",
+      //   child: [],
+      //   meta: {},
+      // },
     ],
   },
   // {
@@ -102,7 +102,52 @@ export default [
   //   },
   // },
   {
-    header: "Role : IVV",
+    header: "Role : IVV v.1.2",
+    description: "",
+    child: [
+      {
+        title: "Dashboard",
+        path: "/dashboard_v2",
+        icon: "ic:outline-dashboard",
+        child: [],
+        meta: {},
+      },
+      {
+        title: "Document Management",
+        path: "/document-management_v2",
+        icon: "material-symbols:lab-profile-rounded",
+        child: [],
+        meta: {
+          /* auth: {
+            role: ["Reviewer"],
+          }, */
+        },
+      },
+      {
+        title: "Configuration",
+        path: "/configuration",
+        icon: "material-symbols:settings",
+        child: [
+          {
+            title: "Project",
+            path: "/configuration_v2/project",
+          },
+          {
+            title: "Contractor",
+            path: "/configuration_v2/contractor",
+          },
+          
+        ],
+        meta: {
+          /* auth: {
+            role: ["Reviewer"],
+          }, */
+        },
+      },
+    ],
+  },
+  {
+    header: "Role : IVV v1.1",
     description: "",
     child: [
       {
@@ -144,8 +189,8 @@ export default [
     description: "",
     child: [
       {
-        title: "Document Self Scanner",
-        path: "/self-scanner",
+        title: "Upload Document",
+        path: "/document-lists",
         icon: "material-symbols-light:document-scanner-rounded",
         child: [],
         meta: {
