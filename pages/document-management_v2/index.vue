@@ -284,6 +284,14 @@ const showModalHideOverlay = ref(false);
 
 // Dummy health meter value
 const healthMeter = ref(50); // Set a dummy value of 75%
+
+const route = useRoute();
+
+onMounted(() => {
+  if (route.query.project) {
+    filter.projectName = route.query.project;
+  }
+});
 </script>
 
 <script>

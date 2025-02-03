@@ -9,23 +9,23 @@ definePageMeta({
 const contractors = ref([
   {
     id: 1,
-    name: "John Doe",
+    name: "Ahmad Ali",
     phoneNo: "123-456-7890",
-    email: "john.doe@example.com",
+    email: "ahmad.ali@example.com",
     assignedProjects: ["Project Alpha", "Project Beta"],
   },
   {
     id: 2,
-    name: "Jane Smith",
+    name: "Siti Aminah",
     phoneNo: "234-567-8901",
-    email: "jane.smith@example.com",
+    email: "siti.aminah@example.com",
     assignedProjects: ["Project Gamma"],
   },
   {
     id: 3,
-    name: "Michael Johnson",
+    name: "Mohd Faiz",
     phoneNo: "345-678-9012",
-    email: "michael.johnson@example.com",
+    email: "mohd.faiz@example.com",
     assignedProjects: ["Project Alpha", "Project Gamma"],
   },
 ]);

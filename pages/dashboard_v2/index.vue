@@ -1,4 +1,6 @@
 <script setup>
+import { useRouter } from 'vue-router';
+
 definePageMeta({
   title: "Dashboard",
   middleware: ["auth"],
@@ -287,6 +289,12 @@ const quickAccess = ref([
   { name: "Settings", icon: "ic:outline-settings", link: "/settings" },
 ]);
 
+const router = useRouter();
+
+const navigateToProjectDocuments = (projectName) => {
+  router.push({ path: '/document-management_v2', query: { project: projectName } });
+};
+
 onMounted(() => {
   setTimeout(() => {
     changeKey.value++;
@@ -402,7 +410,7 @@ onMounted(() => {
                 v-for="(item, index) in recentlyVisited"
                 :key="index"
                 class="flex items-center gap-4 p-4 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200"
-                @click="() => $router.push(item.link)"
+                @click="navigateToProjectDocuments(item.name)"
               >
                 <Icon name="ic:outline-history" class="text-primary" />
                 <div class="flex-1">
