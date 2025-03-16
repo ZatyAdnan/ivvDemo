@@ -12,6 +12,52 @@ export default [
       // },
     ],
   },
+  {
+    header: "owner : Suhada",
+    description: "",
+    child: [
+      {
+        title: "Laman Utama",
+        path: "/ivv/dashboard",
+        icon: "ic:outline-dashboard",
+        child: [],
+        meta: {},
+      },
+     
+      {
+        title: "Projek",
+        path: "/ivv/projects",
+        icon: "material-symbols:lab-profile-rounded",
+        child: [],
+        meta: {
+          /* auth: {
+            role: ["Reviewer"],
+          }, */
+        },
+      },
+      {
+        title: "Tetapan",
+        path: "/configuration",
+        icon: "material-symbols:settings",
+        child: [
+          {
+            title: "Kontraktor",
+            path: "/ivv/tetapan/kontraktor",
+          },
+          {
+            title: "Jenis Dokumen",
+            path: "/ivv/tetapan/jenis_dokumen",
+          },
+          
+        ],
+        meta: {
+          /* auth: {
+            role: ["Reviewer"],
+          }, */
+        },
+      },
+    ],
+  },
   // {
   //   header: "Administration",
   //   description: "Manage your application",
@@ -101,106 +147,106 @@ export default [
   //     },
   //   },
   // },
-  {
-    header: "Role : IVV v.1.2",
-    description: "",
-    child: [
-      {
-        title: "Dashboard",
-        path: "/dashboard_v2",
-        icon: "ic:outline-dashboard",
-        child: [],
-        meta: {},
-      },
-      {
-        title: "Document Management",
-        path: "/document-management_v2",
-        icon: "material-symbols:lab-profile-rounded",
-        child: [],
-        meta: {
-          /* auth: {
-            role: ["Reviewer"],
-          }, */
-        },
-      },
-      {
-        title: "Configuration",
-        path: "/configuration",
-        icon: "material-symbols:settings",
-        child: [
-          {
-            title: "Project",
-            path: "/configuration_v2/project",
-          },
-          {
-            title: "Contractor",
-            path: "/configuration_v2/contractor",
-          },
+  // {
+  //   header: "Role : IVV v.1.2",
+  //   description: "",
+  //   child: [
+  //     {
+  //       title: "Dashboard",
+  //       path: "/dashboard_v2",
+  //       icon: "ic:outline-dashboard",
+  //       child: [],
+  //       meta: {},
+  //     },
+  //     {
+  //       title: "Document Management",
+  //       path: "/document-management_v2",
+  //       icon: "material-symbols:lab-profile-rounded",
+  //       child: [],
+  //       meta: {
+  //         /* auth: {
+  //           role: ["Reviewer"],
+  //         }, */
+  //       },
+  //     },
+  //     {
+  //       title: "Configuration",
+  //       path: "/configuration",
+  //       icon: "material-symbols:settings",
+  //       child: [
+  //         {
+  //           title: "Project",
+  //           path: "/configuration_v2/project",
+  //         },
+  //         {
+  //           title: "Contractor",
+  //           path: "/configuration_v2/contractor",
+  //         },
           
-        ],
-        meta: {
-          /* auth: {
-            role: ["Reviewer"],
-          }, */
-        },
-      },
-    ],
-  },
-  {
-    header: "Role : IVV v1.1",
-    description: "",
-    child: [
-      {
-        title: "Document Management",
-        path: "/document-management",
-        icon: "material-symbols:lab-profile-rounded",
-        child: [],
-        meta: {
-          /* auth: {
-            role: ["Reviewer"],
-          }, */
-        },
-      },
-      {
-        title: "Configuration",
-        path: "/configuration",
-        icon: "material-symbols:settings",
-        child: [
-          {
-            title: "Project",
-            path: "/configuration/project",
-          },
-          {
-            title: "Contractor",
-            path: "/configuration/contractor",
-          },
+  //       ],
+  //       meta: {
+  //         /* auth: {
+  //           role: ["Reviewer"],
+  //         }, */
+  //       },
+  //     },
+  //   ],
+  // },
+  // {
+  //   header: "Role : IVV v1.1",
+  //   description: "",
+  //   child: [
+  //     {
+  //       title: "Document Management",
+  //       path: "/document-management",
+  //       icon: "material-symbols:lab-profile-rounded",
+  //       child: [],
+  //       meta: {
+  //         /* auth: {
+  //           role: ["Reviewer"],
+  //         }, */
+  //       },
+  //     },
+  //     {
+  //       title: "Configuration",
+  //       path: "/configuration",
+  //       icon: "material-symbols:settings",
+  //       child: [
+  //         {
+  //           title: "Project",
+  //           path: "/configuration/project",
+  //         },
+  //         {
+  //           title: "Contractor",
+  //           path: "/configuration/contractor",
+  //         },
           
-        ],
-        meta: {
-          /* auth: {
-            role: ["Reviewer"],
-          }, */
-        },
-      },
-    ],
-  },
-  {
-    header: "Role : Contractor",
-    description: "",
-    child: [
-      {
-        title: "Upload Document",
-        path: "/document-lists",
-        icon: "material-symbols-light:document-scanner-rounded",
-        child: [],
-        meta: {
-          /* auth: {
-            role: ["Reviewer"],
-          }, */
-        },
-      },
-    ],
-  },
+  //       ],
+  //       meta: {
+  //         /* auth: {
+  //           role: ["Reviewer"],
+  //         }, */
+  //       },
+  //     },
+  //   ],
+  // },
+  // {
+  //   header: "Role : Contractor",
+  //   description: "",
+  //   child: [
+  //     {
+  //       title: "Upload Document",
+  //       path: "/document-lists",
+  //       icon: "material-symbols-light:document-scanner-rounded",
+  //       child: [],
+  //       meta: {
+  //         /* auth: {
+  //           role: ["Reviewer"],
+  //         }, */
+  //       },
+  //     },
+  //   ],
+  // },
   // {
   //   header: "",
   //   description: "",

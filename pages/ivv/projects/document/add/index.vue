@@ -145,13 +145,13 @@ const deleteRow = (index) => {
 };
 
 const docType = [
-    "URS - User Requirement Specification",
-    "SRS - System Requirment Specification",
-    "SDS - System Design Specification",
-    "SDD - Specification Data Design",
-    "User Manual",
-    "Test Script"
-  ];
+    "URS - Spesifikasi Keperluan Pengguna",
+    "SRS - Spesifikasi Keperluan Sistem",
+    "SDS - Spesifikasi Reka Bentuk Sistem",
+    "SDD - Spesifikasi Reka Bentuk Data",
+    "Manual Pengguna",
+    "Skrip Ujian"
+];
 
 const columnNames = ref({
   section: "Lokasi (Muka Surat / Seksyen)",
@@ -168,14 +168,165 @@ const saveColumnNames = () => {
 
 const errorCategories = ["BAHARU (NEW) TIDAK BETUL (INCORRECT)", "Tidak Betul (Incorrect)"];
 const classifications = ["MAJOR", "MINOR"];
+
+// Add these refs
+const showModal = ref(false);
+const projectForm = ref({
+  namaProjek: '',
+  kodProjek: '',
+  tarikhMula: '',
+  tarikhTamat: '',
+  statusProjek: '',
+  pemilikProjek: ''
+});
+
+// Add these methods
+const openModal = () => {
+  showModal.value = true;
+};
+
+const closeModal = () => {
+  showModal.value = false;
+  // Reset form
+  projectForm.value = {
+    namaProjek: '',
+    kodProjek: '',
+    tarikhMula: '',
+    tarikhTamat: '',
+    statusProjek: '',
+    pemilikProjek: ''
+  };
+};
+
+const submitProject = async () => {
+  try {
+    // Add your API call here to save the project
+    // Example:
+    // await $fetch('/api/projects', {
+    //   method: 'POST',
+    //   body: projectForm.value
+    // });
+    
+    alert('Projek berjaya ditambah!');
+    closeModal();
+    // Optionally refresh the projects list
+  } catch (error) {
+    console.error('Error adding project:', error);
+    alert('Ralat semasa menambah projek');
+  }
+};
+
+const statusOptions = [
+  'Aktif',
+  'Selesai',
+  'Ditangguhkan',
+  'Dibatalkan'
+];
 </script>
 
 <template>
   <div class="p-6 bg-gray-100 min-h-screen">
+    <!-- Add Project Button -->
+    <!-- <div class="mb-4">
+      <rs-button @click="openModal">
+        <Icon name="material-symbols:add" class="mr-2"></Icon>
+        Tambah Projek
+      </rs-button>
+    </div> -->
+
+    <!-- Project Modal -->
+    <Teleport to="body">
+      <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-2xl">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold">Tambah Projek Baharu</h2>
+            <button @click="closeModal" class="text-gray-500 hover:text-gray-700">
+              <Icon name="material-symbols:close" size="24"></Icon>
+            </button>
+          </div>
+
+          <form @submit.prevent="submitProject" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit
+                type="text"
+                v-model="projectForm.namaProjek"
+                label="Nama Projek"
+                validation="required"
+                :validation-messages="{
+                  required: 'Nama projek diperlukan'
+                }"
+              />
+
+              <FormKit
+                type="text"
+                v-model="projectForm.kodProjek"
+                label="Kod Projek"
+                validation="required"
+                :validation-messages="{
+                  required: 'Kod projek diperlukan'
+                }"
+              />
+
+              <FormKit
+                type="date"
+                v-model="projectForm.tarikhMula"
+                label="Tarikh Mula"
+                validation="required"
+                :validation-messages="{
+                  required: 'Tarikh mula diperlukan'
+                }"
+              />
+
+              <FormKit
+                type="date"
+                v-model="projectForm.tarikhTamat"
+                label="Tarikh Tamat"
+                validation="required"
+                :validation-messages="{
+                  required: 'Tarikh tamat diperlukan'
+                }"
+              />
+
+              <FormKit
+                type="select"
+                v-model="projectForm.statusProjek"
+                :options="statusOptions"
+                label="Status Projek"
+                validation="required"
+                :validation-messages="{
+                  required: 'Status projek diperlukan'
+                }"
+              />
+
+              <FormKit
+                type="text"
+                v-model="projectForm.pemilikProjek"
+                label="Pemilik Projek"
+                validation="required"
+                :validation-messages="{
+                  required: 'Pemilik projek diperlukan'
+                }"
+              />
+            </div>
+
+            <div class="flex justify-end space-x-4 mt-6">
+              <rs-button type="button" variant="secondary" @click="closeModal">
+                Batal
+              </rs-button>
+              <rs-button type="submit">
+                <Icon name="material-symbols:save" class="mr-2"></Icon>
+                Simpan Projek
+              </rs-button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </Teleport>
+
     <!-- File Upload Card -->
     <rs-card class="mb-6 shadow-lg rounded-lg">
       <template #header>
-        <h2 class="text-xl font-bold text-gray-800">Document Self-Scanner</h2>
+        <h2 class="text-xl font-bold text-gray-800">Pengimbas Dokumen Kendiri</h2>
       </template>
 
       <template #body>
@@ -183,8 +334,8 @@ const classifications = ["MAJOR", "MINOR"];
           <FormKit
             type="select"
             v-model="documentType"
-            label="Document Type"
-            placeholder="Select a Document Type"
+            label="Jenis Dokumen"
+            placeholder="Pilih Jenis Dokumen"
             :options="docType"
             validation="required"
             class="w-full"
@@ -192,7 +343,7 @@ const classifications = ["MAJOR", "MINOR"];
           <FormKit
             type="file"
             id="document"
-            label="Upload Document"
+            label="Muat Naik Dokumen"
             accept=".pdf,.docx"
             @change="(e) => handleFileChange(e)"
             class="w-full"
@@ -204,9 +355,8 @@ const classifications = ["MAJOR", "MINOR"];
           <rs-button
             @click.prevent="uploadDocument"
           >
-          <Icon name="material-symbols:check" class="mr-2" title="Delete"></Icon>
-            Validate Document
-            
+          <Icon name="material-symbols:check" class="mr-2" title="Padam"></Icon>
+            Sahkan Dokumen
           </rs-button>
         </div>
       </template>
@@ -215,15 +365,15 @@ const classifications = ["MAJOR", "MINOR"];
     <!-- Validation Results Card -->
     <rs-card v-if="validationResult" class="shadow-lg rounded-lg">
       <template #header>
-        <h3 class="text-xl font-bold text-gray-800">Validation Results</h3>
+        <h3 class="text-xl font-bold text-gray-800">Keputusan Pengesahan</h3>
       </template>
 
       <template #body>
         <!-- Health Meter -->
         <div class="mb-6">
-          <h4 class="font-medium text-gray-700">Health Meter:</h4>
+          <h4 class="font-medium text-gray-700">Meter Kesihatan:</h4>
           <div class="flex items-center space-x-4 mt-2">
-            <span class="text-lg font-semibold">{{ validationResult.score }}% Complete</span>
+            <span class="text-lg font-semibold">{{ validationResult.score }}% Selesai</span>
             <div class="w-full h-4 bg-gray-300 rounded-full overflow-hidden">
               <div
                 class="h-4 rounded-full"
@@ -234,16 +384,15 @@ const classifications = ["MAJOR", "MINOR"];
         </div>
 
         <!-- Readiness Checklist -->
-        <div>
+        <div >
           <h4 class="font-medium mb-4 flex justify-between items-center text-gray-700">
-            Readiness Checklist:
-            <!-- <rs-button
+            Senarai Semak Kesediaan:
+            <rs-button v-if="!isEditing"
               class="text-sm"
               @click="toggleEdit"
             >
-            
-              {{ isEditing ? "Done Editing" : "Edit Checklist" }}
-            </rs-button> -->
+              {{ "Edit Senarai Semak" }}
+            </rs-button>
           </h4>
           <!-- Editable or View-Only Checklist -->
           <div v-if="isEditing">
@@ -251,7 +400,7 @@ const classifications = ["MAJOR", "MINOR"];
             <div class="mb-4">
               <h5 class="font-medium text-gray-700 ml-6 mb-2">Edit Checklist:</h5>
               <div class="overflow-x-auto">
-                <div class="max-h-96 overflow-y-auto">
+                <div class="max-h-150 overflow-y-auto">
                   <table class="min-w-full bg-white">
                     <thead>
                       <tr>
@@ -316,7 +465,7 @@ const classifications = ["MAJOR", "MINOR"];
                         <td class="py-2 px-4 border-b">
                           <rs-button class="text-red-500" @click="deleteRow(index)">
                             <Icon name="material-symbols:delete" class="mr-2"></Icon>
-                            Delete
+                            Padam
                           </rs-button>
                         </td>
                       </tr>
@@ -326,18 +475,21 @@ const classifications = ["MAJOR", "MINOR"];
               </div>
               <div class="flex justify-center mt-4">
                 <rs-button class="w-full py-4" @click="addNewRow">
-                  <Icon name="material-symbols:add" class="mr-2" title="Delete"></Icon>
-                  Add New Row
+                  <Icon name="material-symbols:add" class="mr-2" title="Tambah"></Icon>
+                  Tambah Baris Baharu
                 </rs-button>
               </div>
             </div>
             <div class="flex justify-end mt-4">
-              <rs-button @click="saveChanges"> <Icon name="material-symbols:save" class="mr-2" title="Delete"></Icon>Save Changes</rs-button>
+              <rs-button @click="saveChanges">
+                <Icon name="material-symbols:save" class="mr-2" title="Simpan"></Icon>
+                Simpan Perubahan
+              </rs-button>
             </div>
            </rs-card>
           </div>
           <div v-else class="overflow-x-auto">
-            <div class="max-h-96 overflow-y-auto">
+            <div class="max-h-150 overflow-y-auto">
               <table class="min-w-full bg-white">
                 <thead>
                   <tr>
@@ -361,15 +513,14 @@ const classifications = ["MAJOR", "MINOR"];
                 </tbody>
               </table>
             </div>
-            <div class="flex space-x-4 mt-6 justify-end" v-if="validationResult">
+            <!-- <div class="flex space-x-4 mt-6 justify-end" v-if="validationResult">
               <rs-button
                 @click="exportToExcel"
               >
-              <Icon name="material-symbols:file-export" class="mr-2" title="Delete"></Icon>
-             
-                Export to Excel
+              <Icon name="material-symbols:file-export" class="mr-2" title="Eksport"></Icon>
+                Eksport ke Excel
               </rs-button>
-            </div>
+            </div> -->
           </div>
         </div>
       </template>

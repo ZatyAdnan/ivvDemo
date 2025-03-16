@@ -1,178 +1,178 @@
 <script setup>
-import { reactive, ref, onMounted } from 'vue'; // Import reactive, ref, and onMounted from Vue
+  import { reactive, ref, onMounted } from 'vue'; // Import reactive, ref, and onMounted from Vue
 
-definePageMeta({
-  title: "Add New Project",
-  layout: "default",
-  middleware: ["auth"], // Ensure only authenticated users can access
-});
+  definePageMeta({
+    title: "Add New Project",
+    layout: "default",
+    middleware: ["auth"], // Ensure only authenticated users can access
+  });
 
-const form = reactive({
-  projectName: "",
-  projectId: "",
-  projectDescription: "",
-  projectStatus: "",
-  notes: "",
-  contractorDocuments: [],
-  contractorValidationRules: "",
-  contractorSubmissionDeadline: "",
-  contractorApprovalWorkflow: [],
-  ivvDocuments: [],
-  ivvValidationStandards: "",
-  ivvFrequencyOfSubmission: "",
-  ivvApprovalWorkflow: [],
-  projectManagementCriteria: [], // Remove dummy data
-  newCriteria: { name: "", description: "" } // Initialize newCriteria
-});
+  const form = reactive({
+    projectName: "",
+    projectId: "",
+    projectDescription: "",
+    projectStatus: "",
+    notes: "",
+    contractorDocuments: [],
+    contractorValidationRules: "",
+    contractorSubmissionDeadline: "",
+    contractorApprovalWorkflow: [],
+    ivvDocuments: [],
+    ivvValidationStandards: "",
+    ivvFrequencyOfSubmission: "",
+    ivvApprovalWorkflow: [],
+    projectManagementCriteria: [], // Remove dummy data
+    newCriteria: { name: "", description: "" } // Initialize newCriteria
+  });
 
-const showModalCenter = ref(false); // Initialize showModalCenter
-const showEditModal = ref(false); // Initialize showEditModal
-const editCriteria = reactive({ name: "", description: "" }); // Initialize editCriteria
+  const showModalCenter = ref(false); // Initialize showModalCenter
+  const showEditModal = ref(false); // Initialize showEditModal
+  const editCriteria = reactive({ name: "", description: "" }); // Initialize editCriteria
 
-const validatorOptions = [
-  { value: "Validator 1", label: "Validator 1" },
-  { value: "Validator 2", label: "Validator 2" },
-  { value: "Validator 3", label: "Validator 3" },
-];
+  const validatorOptions = [
+    { value: "Validator 1", label: "Validator 1" },
+    { value: "Validator 2", label: "Validator 2" },
+    { value: "Validator 3", label: "Validator 3" },
+  ];
 
-const documentOptions = [
-  { value: "Business License", label: "Business License" },
-  { value: "Financial Statements", label: "Financial Statements" },
-  { value: "Tax Clearance Certificate", label: "Tax Clearance Certificate" },
-  { value: "Test Plans", label: "Test Plans" },
-  { value: "Test Reports", label: "Test Reports" },
-  { value: "Compliance Certificates", label: "Compliance Certificates" },
-];
+  const documentOptions = [
+    { value: "Business License", label: "Business License" },
+    { value: "Financial Statements", label: "Financial Statements" },
+    { value: "Tax Clearance Certificate", label: "Tax Clearance Certificate" },
+    { value: "Test Plans", label: "Test Plans" },
+    { value: "Test Reports", label: "Test Reports" },
+    { value: "Compliance Certificates", label: "Compliance Certificates" },
+  ];
 
-const statusOptions = [
-  { value: "Pending", label: "Pending" },
-  { value: "Active", label: "Active" },
-  { value: "Completed", label: "Completed" },
-];
+  const statusOptions = [
+    { value: "Pending", label: "Pending" },
+    { value: "Active", label: "Active" },
+    { value: "Completed", label: "Completed" },
+  ];
 
-const criteriaOptions = [
-  { value: "Criteria 1", label: "Criteria 1" },
-  { value: "Criteria 2", label: "Criteria 2" },
-  { value: "Criteria 3", label: "Criteria 3" },
-];
+  const criteriaOptions = [
+    { value: "Criteria 1", label: "Criteria 1" },
+    { value: "Criteria 2", label: "Criteria 2" },
+    { value: "Criteria 3", label: "Criteria 3" },
+  ];
 
-const generateProjectId = () => {
-  return `PRJ-${Math.floor(Math.random() * 10000)}`;
-};
+  const generateProjectId = () => {
+    return `PRJ-${Math.floor(Math.random() * 10000)}`;
+  };
 
-const today = new Date();
-const formattedDate = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
+  const today = new Date();
+  const formattedDate = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
 
-onMounted(() => {
-  form.projectId = generateProjectId();
-});
+  onMounted(() => {
+    form.projectId = generateProjectId();
+  });
 
-const submitForm = () => {
-  // Handle form submission logic here
-  alert("Form submitted!");
-};
+  const submitForm = () => {
+    // Handle form submission logic here
+    alert("Form submitted!");
+  };
 
-const addCriteria = () => {
-  if (form.newCriteria.name && form.newCriteria.description) {
-    form.projectManagementCriteria.push({ 
-      name: form.newCriteria.name.name || form.newCriteria.name, 
-      description: form.newCriteria.description 
-    });
-    form.newCriteria = { name: "", description: "" };
+  const addCriteria = () => {
+    if (form.newCriteria.name && form.newCriteria.description) {
+      form.projectManagementCriteria.push({ 
+        name: form.newCriteria.name.name || form.newCriteria.name, 
+        description: form.newCriteria.description 
+      });
+      form.newCriteria = { name: "", description: "" };
+      showModalCenter.value = false;
+    } else {
+      alert("Please fill in all fields.");
+    }
+  };
+
+  const clickOK = () => {
+    addCriteria();
+  };
+
+  const clickCancel = () => {
     showModalCenter.value = false;
-  } else {
-    alert("Please fill in all fields.");
-  }
-};
+  };
 
-const clickOK = () => {
-  addCriteria();
-};
+  const openEditModal = (criteria) => {
+    editCriteria.name = criteria.name;
+    editCriteria.description = criteria.description;
+    showEditModal.value = true;
+  };
 
-const clickCancel = () => {
-  showModalCenter.value = false;
-};
+  const saveEditCriteria = () => {
+    const index = form.projectManagementCriteria.findIndex(c => c.name === editCriteria.name && c.description === editCriteria.description);
+    if (index !== -1) {
+      form.projectManagementCriteria[index] = { ...editCriteria };
+      showEditModal.value = false;
+    }
+  };
 
-const openEditModal = (criteria) => {
-  editCriteria.name = criteria.name;
-  editCriteria.description = criteria.description;
-  showEditModal.value = true;
-};
+  const showDeleteModal = ref(false); // Initialize showDeleteModal
+  const criteriaToDelete = ref(null); // Initialize criteriaToDelete
 
-const saveEditCriteria = () => {
-  const index = form.projectManagementCriteria.findIndex(c => c.name === editCriteria.name && c.description === editCriteria.description);
-  if (index !== -1) {
-    form.projectManagementCriteria[index] = { ...editCriteria };
-    showEditModal.value = false;
-  }
-};
+  const openDeleteModal = (index) => {
+    criteriaToDelete.value = index;
+    showDeleteModal.value = true;
+  };
 
-const showDeleteModal = ref(false); // Initialize showDeleteModal
-const criteriaToDelete = ref(null); // Initialize criteriaToDelete
+  const deleteCriteria = () => {
+    if (criteriaToDelete.value !== null) {
+      form.projectManagementCriteria.splice(criteriaToDelete.value, 1);
+      showDeleteModal.value = false;
+      criteriaToDelete.value = null;
+    }
+  };
 
-const openDeleteModal = (index) => {
-  criteriaToDelete.value = index;
-  showDeleteModal.value = true;
-};
+  const showIVVModalCenter = ref(false); // Initialize showIVVModalCenter
+  const showIVVEditModal = ref(false); // Initialize showIVVEditModal
+  const editIVVCriteria = reactive({ name: "", description: "" }); // Initialize editIVVCriteria
 
-const deleteCriteria = () => {
-  if (criteriaToDelete.value !== null) {
-    form.projectManagementCriteria.splice(criteriaToDelete.value, 1);
-    showDeleteModal.value = false;
-    criteriaToDelete.value = null;
-  }
-};
+  const addIVVCriteria = () => {
+    if (form.newCriteria.name && form.newCriteria.description) {
+      form.ivvApprovalWorkflow.push({ 
+        name: form.newCriteria.name.name || form.newCriteria.name, 
+        description: form.newCriteria.description 
+      });
+      form.newCriteria = { name: "", description: "" };
+      showIVVModalCenter.value = false;
+    } else {
+      alert("Please fill in all fields.");
+    }
+  };
 
-const showIVVModalCenter = ref(false); // Initialize showIVVModalCenter
-const showIVVEditModal = ref(false); // Initialize showIVVEditModal
-const editIVVCriteria = reactive({ name: "", description: "" }); // Initialize editIVVCriteria
+  const clickIVVOK = () => {
+    addIVVCriteria();
+  };
 
-const addIVVCriteria = () => {
-  if (form.newCriteria.name && form.newCriteria.description) {
-    form.ivvApprovalWorkflow.push({ 
-      name: form.newCriteria.name.name || form.newCriteria.name, 
-      description: form.newCriteria.description 
-    });
-    form.newCriteria = { name: "", description: "" };
-    showIVVModalCenter.value = false;
-  } else {
-    alert("Please fill in all fields.");
-  }
-};
+  const openIVVEditModal = (criteria) => {
+    editIVVCriteria.name = criteria.name;
+    editIVVCriteria.description = criteria.description;
+    showIVVEditModal.value = true;
+  };
 
-const clickIVVOK = () => {
-  addIVVCriteria();
-};
+  const saveIVVEditCriteria = () => {
+    const index = form.ivvApprovalWorkflow.findIndex(c => c.name === editIVVCriteria.name && c.description === editIVVCriteria.description);
+    if (index !== -1) {
+      form.ivvApprovalWorkflow[index] = { ...editIVVCriteria };
+      showIVVEditModal.value = false;
+    }
+  };
 
-const openIVVEditModal = (criteria) => {
-  editIVVCriteria.name = criteria.name;
-  editIVVCriteria.description = criteria.description;
-  showIVVEditModal.value = true;
-};
+  const showIVVDeleteModal = ref(false); // Initialize showIVVDeleteModal
+  const ivvCriteriaToDelete = ref(null); // Initialize ivvCriteriaToDelete
 
-const saveIVVEditCriteria = () => {
-  const index = form.ivvApprovalWorkflow.findIndex(c => c.name === editIVVCriteria.name && c.description === editIVVCriteria.description);
-  if (index !== -1) {
-    form.ivvApprovalWorkflow[index] = { ...editIVVCriteria };
-    showIVVEditModal.value = false;
-  }
-};
+  const openIVVDeleteModal = (index) => {
+    ivvCriteriaToDelete.value = index;
+    showIVVDeleteModal.value = true;
+  };
 
-const showIVVDeleteModal = ref(false); // Initialize showIVVDeleteModal
-const ivvCriteriaToDelete = ref(null); // Initialize ivvCriteriaToDelete
-
-const openIVVDeleteModal = (index) => {
-  ivvCriteriaToDelete.value = index;
-  showIVVDeleteModal.value = true;
-};
-
-const deleteIVVCriteria = () => {
-  if (ivvCriteriaToDelete.value !== null) {
-    form.ivvApprovalWorkflow.splice(ivvCriteriaToDelete.value, 1);
-    showIVVDeleteModal.value = false;
-    ivvCriteriaToDelete.value = null;
-  }
-};
+  const deleteIVVCriteria = () => {
+    if (ivvCriteriaToDelete.value !== null) {
+      form.ivvApprovalWorkflow.splice(ivvCriteriaToDelete.value, 1);
+      showIVVDeleteModal.value = false;
+      ivvCriteriaToDelete.value = null;
+    }
+  };
 
 </script>
 
