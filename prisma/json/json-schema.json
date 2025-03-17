@@ -102,6 +102,18 @@
           ],
           "format": "date-time"
         },
+        "kontraktor_dokumen": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/kontraktor_dokumen"
+          }
+        },
+        "projek": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/projek"
+          }
+        },
         "userrole": {
           "type": "array",
           "items": {
@@ -211,6 +223,48 @@
             "null"
           ],
           "format": "date-time"
+        },
+        "kontraktor_kontraktor_kontraktor_gred_cidbTolookup": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/kontraktor"
+          }
+        },
+        "kontraktor_kontraktor_kontraktor_kategoriTolookup": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/kontraktor"
+          }
+        },
+        "kontraktor_kontraktor_kontraktor_negeriTolookup": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/kontraktor"
+          }
+        },
+        "kontraktor_dokumen": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/kontraktor_dokumen"
+          }
+        },
+        "kontraktor_dokumen_butiran_kontraktor_dokumen_butiran_kdb_kategori_kesalahanTolookup": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/kontraktor_dokumen_butiran"
+          }
+        },
+        "kontraktor_dokumen_butiran_kontraktor_dokumen_butiran_kdb_klasifikasiTolookup": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/kontraktor_dokumen_butiran"
+          }
+        },
+        "projek": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/projek"
+          }
         }
       }
     },
@@ -232,67 +286,400 @@
         }
       }
     },
-    "customer": {
+    "dokumen": {
       "type": "object",
       "properties": {
-        "cust_id": {
+        "dokumen_id": {
           "type": "integer"
         },
-        "cust_name": {
+        "dokumen_name": {
+          "type": "string"
+        },
+        "dokumen_km": {
+          "type": "string"
+        },
+        "dokumen_status": {
+          "type": "string"
+        },
+        "kontraktor_dokumen": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/kontraktor_dokumen"
+          }
+        }
+      }
+    },
+    "kontraktor": {
+      "type": "object",
+      "properties": {
+        "kontraktor_id": {
+          "type": "integer"
+        },
+        "kontraktor_nama": {
+          "type": "string"
+        },
+        "kontraktor_no_pendaftaran": {
+          "type": "string"
+        },
+        "kontraktor_bidang_kepakaran": {
           "type": [
             "string",
             "null"
           ]
         },
-        "cust_type": {
-          "type": [
-            "string",
-            "null"
-          ]
+        "kontraktor_alamat_1": {
+          "type": "string"
         },
-        "cust_username": {
-          "type": [
-            "string",
-            "null"
-          ]
+        "kontraktor_alamat_2": {
+          "type": "string"
         },
-        "cust_ic_number": {
-          "type": [
-            "string",
-            "null"
-          ]
+        "kontraktor_bandar": {
+          "type": "string"
         },
-        "cust_address": {
-          "type": [
-            "string",
-            "null"
-          ]
+        "kontraktor_poskod": {
+          "type": "string"
         },
-        "cust_dob": {
-          "type": [
-            "string",
-            "null"
-          ],
+        "kontraktor_wakil_nama": {
+          "type": "string"
+        },
+        "kontraktor_wakil_jawatan": {
+          "type": "string"
+        },
+        "kontraktor_wakil_ic": {
+          "type": "string"
+        },
+        "kontraktor_wakil_no_telefon": {
+          "type": "string"
+        },
+        "kontraktor_wakil_emel": {
+          "type": "string"
+        },
+        "kontraktor_tarikh_daftar": {
+          "type": "string",
           "format": "date-time"
         },
-        "cust_gender": {
-          "type": [
-            "string",
-            "null"
+        "lookup_kontraktor_kontraktor_gred_cidbTolookup": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/lookup"
+            },
+            {
+              "type": "null"
+            }
           ]
         },
-        "cust_status": {
+        "lookup_kontraktor_kontraktor_kategoriTolookup": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/lookup"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lookup_kontraktor_kontraktor_negeriTolookup": {
+          "$ref": "#/definitions/lookup"
+        },
+        "projek": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/projek"
+          }
+        }
+      }
+    },
+    "kontraktor_dokumen": {
+      "type": "object",
+      "properties": {
+        "kontraktorDoc_id": {
+          "type": "integer"
+        },
+        "kontraktorDoc_name": {
+          "type": "string"
+        },
+        "kontraktorDoc_dokumen_path": {
+          "type": "string"
+        },
+        "kontraktorDoc_version": {
           "type": [
             "integer",
             "null"
           ]
         },
-        "cust_created_datetime": {
+        "kontraktorDoc_produk_kerja": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "kontraktorDoc_sesi_semakan": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "kontraktorDoc_id_dokumen": {
+          "type": "string"
+        },
+        "kontraktorDoc_fasa": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "kontraktorDoc_bil_mukasurat": {
+          "type": "integer"
+        },
+        "kontraktorDoc_start_semakan": {
           "type": [
             "string",
             "null"
           ],
           "format": "date-time"
+        },
+        "kontraktorDoc_end_semakan": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "kontraktorDoc_skor": {
+          "type": "number"
+        },
+        "kontraktorDoc_createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "user": {
+          "$ref": "#/definitions/user"
+        },
+        "dokumen": {
+          "$ref": "#/definitions/dokumen"
+        },
+        "projek": {
+          "$ref": "#/definitions/projek"
+        },
+        "lookup": {
+          "$ref": "#/definitions/lookup"
+        },
+        "kontraktor_dokumen_butiran": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/kontraktor_dokumen_butiran"
+          }
+        }
+      }
+    },
+    "kontraktor_dokumen_butiran": {
+      "type": "object",
+      "properties": {
+        "kdb_id": {
+          "type": "integer"
+        },
+        "kdb_lokasi_dokumen": {
+          "type": "string"
+        },
+        "kdb_perincian": {
+          "type": "string"
+        },
+        "kdb_kod_rujukan_km": {
+          "type": "string"
+        },
+        "kdb_catatan": {
+          "type": "string"
+        },
+        "kdb_created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "kdb_updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "kdb_deleted_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "kontraktor_dokumen": {
+          "$ref": "#/definitions/kontraktor_dokumen"
+        },
+        "lookup_kontraktor_dokumen_butiran_kdb_kategori_kesalahanTolookup": {
+          "$ref": "#/definitions/lookup"
+        },
+        "lookup_kontraktor_dokumen_butiran_kdb_klasifikasiTolookup": {
+          "$ref": "#/definitions/lookup"
+        }
+      }
+    },
+    "projek": {
+      "type": "object",
+      "properties": {
+        "projek_id": {
+          "type": "integer"
+        },
+        "projek_nama": {
+          "type": "string"
+        },
+        "projek_kod": {
+          "type": "string"
+        },
+        "projek_skop": {
+          "type": "string"
+        },
+        "projek_mula": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "projek_tamat": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "projek_amaun": {
+          "type": "number",
+          "default": 0
+        },
+        "projek_nama_pic": {
+          "type": "string"
+        },
+        "projek_emel_pic": {
+          "type": "string"
+        },
+        "projek_kontakNo_pic": {
+          "type": "string"
+        },
+        "projek_createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "projek_updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "kontraktor_dokumen": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/kontraktor_dokumen"
+          }
+        },
+        "user": {
+          "$ref": "#/definitions/user"
+        },
+        "kontraktor": {
+          "$ref": "#/definitions/kontraktor"
+        },
+        "lookup": {
+          "$ref": "#/definitions/lookup"
+        }
+      }
+    },
+    "survey_list": {
+      "type": "object",
+      "properties": {
+        "data_id": {
+          "type": "integer"
+        },
+        "survey_id": {
+          "type": "string",
+          "default": "0"
+        },
+        "vehicle_number": {
+          "type": "string",
+          "default": "0"
+        },
+        "vehicle_timein": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "vehicle_timeout": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "project_id": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "project_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "project_eecode": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "project_parker_type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "project_surveyor_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ref_id": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "ref_type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "vehicle_status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "data_status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "created_by": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "created_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "updated_by": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "updated_at": {
+          "type": [
+            "string",
+            "null"
+          ]
         }
       }
     }
@@ -314,8 +701,23 @@
     "userrole": {
       "$ref": "#/definitions/userrole"
     },
-    "customer": {
-      "$ref": "#/definitions/customer"
+    "dokumen": {
+      "$ref": "#/definitions/dokumen"
+    },
+    "kontraktor": {
+      "$ref": "#/definitions/kontraktor"
+    },
+    "kontraktor_dokumen": {
+      "$ref": "#/definitions/kontraktor_dokumen"
+    },
+    "kontraktor_dokumen_butiran": {
+      "$ref": "#/definitions/kontraktor_dokumen_butiran"
+    },
+    "projek": {
+      "$ref": "#/definitions/projek"
+    },
+    "survey_list": {
+      "$ref": "#/definitions/survey_list"
     }
   }
 }

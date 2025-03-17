@@ -16,7 +16,41 @@ const togglePasswordVisibility = ref(false);
 
 const login = async () => {
   try {
-    window.location.href = "/dashboard";
+    const res = await useFetch("/api/auth/login", {
+      method: "POST",
+      initialCache: false,
+      body: JSON.stringify({
+        username: username.value,
+        password: password.value,
+      }),
+    });
+
+    const data = res.data.value;
+
+    if (data.statusCode === 200) {
+      // Save token to pinia store
+      userStore.setUsername(data.data.username);
+      userStore.setName(data.data.name);
+      userStore.setRoles(data.data.roles);
+      userStore.setIsAuthenticated(true);
+
+      $swal.fire({
+        position: "center",
+        title: "Success",
+        text: "Login Success",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
+      window.location.href = "/ivv/dashboard";
+    } else {
+      $swal.fire({
+        title: "Error!",
+        text: data.message,
+        icon: "error",
+      });
+    }
   } catch (e) {
     console.log(e);
   }

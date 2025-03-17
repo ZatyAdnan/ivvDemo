@@ -822,7 +822,7 @@ const computedColumnTitle = computed(() => {
       </div>
     </div>
   </div>
-  <div v-else class="table-wrapper">
+  <div v-else class="table-wrapper px-4">
     <div
       class="border border-[rgb(var(--border-color))] rounded-lg overflow-hidden"
     >
@@ -834,10 +834,10 @@ const computedColumnTitle = computed(() => {
       <div class="p-8 text-center">
         <Icon name="mdi:table-off" class="text-gray-300 mb-4" size="48px" />
         <p class="text-[rgb(var(--text-color))] text-lg font-medium">
-          No Data Available
+          Tiada Data
         </p>
         <p class="text-gray-500 mt-2">
-          There are currently no entries to display in this table.
+          Tiada data yang tersedia dalam jadual ini.
         </p>
       </div>
     </div>

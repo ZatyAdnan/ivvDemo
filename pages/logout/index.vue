@@ -8,6 +8,9 @@ definePageMeta({
 
 const userStore = useUserStore();
 
+await useFetch("/api/auth/logout", {
+  method: "GET",
+});
 
 if (process.client) {
   userStore.setUsername("");

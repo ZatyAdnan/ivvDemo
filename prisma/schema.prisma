@@ -22,17 +22,19 @@ model audit {
 }
 
 model user {
-  userID           Int        @id @default(autoincrement())
-  userSecretKey    String?    @db.VarChar(255)
-  userUsername     String?    @db.VarChar(255)
-  userPassword     String?    @db.VarChar(255)
-  userFullName     String?    @db.VarChar(255)
-  userEmail        String?    @db.VarChar(255)
-  userPhone        String?    @db.VarChar(255)
-  userStatus       String?    @db.VarChar(255)
-  userCreatedDate  DateTime?  @db.DateTime(0)
-  userModifiedDate DateTime?  @db.DateTime(0)
-  userrole         userrole[]
+  userID             Int                  @id @default(autoincrement())
+  userSecretKey      String?              @db.VarChar(255)
+  userUsername       String?              @db.VarChar(255)
+  userPassword       String?              @db.VarChar(255)
+  userFullName       String?              @db.VarChar(255)
+  userEmail          String?              @db.VarChar(255)
+  userPhone          String?              @db.VarChar(255)
+  userStatus         String?              @db.VarChar(255)
+  userCreatedDate    DateTime?            @db.DateTime(0)
+  userModifiedDate   DateTime?            @db.DateTime(0)
+  kontraktor_dokumen kontraktor_dokumen[]
+  projek             projek[]
+  userrole           userrole[]
 }
 
 model role {
@@ -46,15 +48,22 @@ model role {
 }
 
 model lookup {
-  lookupID           Int       @id @default(autoincrement())
-  lookupOrder        Int?
-  lookupTitle        String?   @db.VarChar(255)
-  lookupRefCode      String?   @db.VarChar(255)
-  lookupValue        String?   @db.VarChar(255)
-  lookupType         String?   @db.VarChar(255)
-  lookupStatus       String?   @db.VarChar(255)
-  lookupCreatedDate  DateTime? @db.DateTime(0)
-  lookupModifiedDate DateTime? @db.DateTime(0)
+  lookupID                                                                             Int                          @id @default(autoincrement())
+  lookupOrder                                                                          Int?
+  lookupTitle                                                                          String?                      @db.VarChar(255)
+  lookupRefCode                                                                        String?                      @db.VarChar(255)
+  lookupValue                                                                          String?                      @db.VarChar(255)
+  lookupType                                                                           String?                      @db.VarChar(255)
+  lookupStatus                                                                         String?                      @db.VarChar(255)
+  lookupCreatedDate                                                                    DateTime?                    @db.DateTime(0)
+  lookupModifiedDate                                                                   DateTime?                    @db.DateTime(0)
+  kontraktor_kontraktor_kontraktor_gred_cidbTolookup                                   kontraktor[]                 @relation("kontraktor_kontraktor_gred_cidbTolookup")
+  kontraktor_kontraktor_kontraktor_kategoriTolookup                                    kontraktor[]                 @relation("kontraktor_kontraktor_kategoriTolookup")
+  kontraktor_kontraktor_kontraktor_negeriTolookup                                      kontraktor[]                 @relation("kontraktor_kontraktor_negeriTolookup")
+  kontraktor_dokumen                                                                   kontraktor_dokumen[]
+  kontraktor_dokumen_butiran_kontraktor_dokumen_butiran_kdb_kategori_kesalahanTolookup kontraktor_dokumen_butiran[] @relation("kontraktor_dokumen_butiran_kdb_kategori_kesalahanTolookup")
+  kontraktor_dokumen_butiran_kontraktor_dokumen_butiran_kdb_klasifikasiTolookup        kontraktor_dokumen_butiran[] @relation("kontraktor_dokumen_butiran_kdb_klasifikasiTolookup")
+  projek                                                                               projek[]
 }
 
 model userrole {
@@ -69,15 +78,139 @@ model userrole {
   @@index([userRoleUserID], map: "FK_userrole_user")
 }
 
-model customer {
-  cust_id               Int       @id @default(autoincrement())
-  cust_name             String?   @db.VarChar(255)
-  cust_type             String?   @db.VarChar(255)
-  cust_username         String?   @db.VarChar(255)
-  cust_ic_number        String?   @db.VarChar(255)
-  cust_address          String?   @db.VarChar(255)
-  cust_dob              DateTime? @db.Date
-  cust_gender           String?   @db.VarChar(255)
-  cust_status           Int?
-  cust_created_datetime DateTime? @db.DateTime(0)
+model dokumen {
+  dokumen_id         Int                  @id @default(autoincrement())
+  dokumen_name       String               @db.VarChar(255)
+  dokumen_km         String               @db.Text
+  dokumen_status     String               @db.VarChar(50)
+  kontraktor_dokumen kontraktor_dokumen[]
+}
+
+model kontraktor {
+  kontraktor_id                                  Int      @id @default(autoincrement())
+  kontraktor_nama                                String   @db.VarChar(255)
+  kontraktor_no_pendaftaran                      String   @unique(map: "kontraktor_no_pendaftaran") @db.VarChar(50)
+  kontraktor_kategori                            Int?
+  kontraktor_gred_cidb                           Int?
+  kontraktor_bidang_kepakaran                    String?  @db.VarChar(255)
+  kontraktor_alamat_1                            String   @db.Text
+  kontraktor_alamat_2                            String   @db.Text
+  kontraktor_bandar                              String   @db.VarChar(100)
+  kontraktor_negeri                              Int
+  kontraktor_poskod                              String   @db.VarChar(10)
+  kontraktor_wakil_nama                          String   @db.VarChar(255)
+  kontraktor_wakil_jawatan                       String   @db.VarChar(100)
+  kontraktor_wakil_ic                            String   @db.VarChar(50)
+  kontraktor_wakil_no_telefon                    String   @db.VarChar(20)
+  kontraktor_wakil_emel                          String   @db.VarChar(100)
+  kontraktor_tarikh_daftar                       DateTime @db.Timestamp(0)
+  lookup_kontraktor_kontraktor_gred_cidbTolookup lookup?  @relation("kontraktor_kontraktor_gred_cidbTolookup", fields: [kontraktor_gred_cidb], references: [lookupID], onDelete: Cascade, onUpdate: NoAction, map: "kontraktor_ibfk_1")
+  lookup_kontraktor_kontraktor_kategoriTolookup  lookup?  @relation("kontraktor_kontraktor_kategoriTolookup", fields: [kontraktor_kategori], references: [lookupID], onDelete: Cascade, onUpdate: NoAction, map: "kontraktor_ibfk_2")
+  lookup_kontraktor_kontraktor_negeriTolookup    lookup   @relation("kontraktor_kontraktor_negeriTolookup", fields: [kontraktor_negeri], references: [lookupID], onDelete: Cascade, onUpdate: NoAction, map: "kontraktor_ibfk_3")
+  projek                                         projek[]
+
+  @@index([kontraktor_gred_cidb], map: "kontraktor_gred_cidb")
+  @@index([kontraktor_kategori], map: "kontraktor_kategori")
+  @@index([kontraktor_negeri], map: "kontraktor_negeri")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model kontraktor_dokumen {
+  kontraktorDoc_id            Int                          @id @default(autoincrement())
+  kontraktorDoc_projekID      Int
+  kontraktorDoc_dokumen_type  Int
+  kontraktorDoc_name          String                       @db.VarChar(255)
+  kontraktorDoc_dokumen_path  String                       @db.VarChar(255)
+  kontraktorDoc_version       Int?
+  kontraktorDoc_produk_kerja  String?                      @db.VarChar(255)
+  kontraktorDoc_sesi_semakan  Int?
+  kontraktorDoc_id_dokumen    String                       @db.VarChar(255)
+  kontraktorDoc_fasa          String?                      @db.VarChar(255)
+  kontraktorDoc_bil_mukasurat Int
+  kontraktorDoc_start_semakan DateTime?                    @db.Date
+  kontraktorDoc_end_semakan   DateTime?                    @db.Date
+  kontraktorDoc_skor          Decimal                      @db.Decimal(10, 2)
+  kontraktorDoc_status        Int
+  kontraktorDoc_createdAt     DateTime                     @db.Timestamp(0)
+  kontraktorDoc_createdBY     Int
+  user                        user                         @relation(fields: [kontraktorDoc_createdBY], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "fk_kontraktorDoc_createdBY")
+  dokumen                     dokumen                      @relation(fields: [kontraktorDoc_dokumen_type], references: [dokumen_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_kontraktorDoc_dokumen_type")
+  projek                      projek                       @relation(fields: [kontraktorDoc_projekID], references: [projek_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_kontraktorDoc_projekID")
+  lookup                      lookup                       @relation(fields: [kontraktorDoc_status], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "fk_kontraktorDoc_status")
+  kontraktor_dokumen_butiran  kontraktor_dokumen_butiran[]
+
+  @@index([kontraktorDoc_createdBY], map: "fk_kontraktorDoc_createdBY")
+  @@index([kontraktorDoc_dokumen_type], map: "fk_kontraktorDoc_dokumen_type")
+  @@index([kontraktorDoc_projekID], map: "fk_kontraktorDoc_projekID")
+  @@index([kontraktorDoc_status], map: "fk_kontraktorDoc_status")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model kontraktor_dokumen_butiran {
+  kdb_id                                                           Int                @id @default(autoincrement())
+  kdb_dokumen_id                                                   Int
+  kdb_lokasi_dokumen                                               String             @db.VarChar(255)
+  kdb_perincian                                                    String             @db.Text
+  kdb_kod_rujukan_km                                               String             @db.VarChar(255)
+  kdb_klasifikasi                                                  Int
+  kdb_kategori_kesalahan                                           Int
+  kdb_catatan                                                      String             @db.Text
+  kdb_created_at                                                   DateTime           @db.Timestamp(0)
+  kdb_updated_at                                                   DateTime           @default(now()) @db.Timestamp(0)
+  kdb_deleted_at                                                   DateTime?          @db.Timestamp(0)
+  kontraktor_dokumen                                               kontraktor_dokumen @relation(fields: [kdb_dokumen_id], references: [kontraktorDoc_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_kdb_dokumen_id")
+  lookup_kontraktor_dokumen_butiran_kdb_kategori_kesalahanTolookup lookup             @relation("kontraktor_dokumen_butiran_kdb_kategori_kesalahanTolookup", fields: [kdb_kategori_kesalahan], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "fk_kdb_kategori_kesalahan")
+  lookup_kontraktor_dokumen_butiran_kdb_klasifikasiTolookup        lookup             @relation("kontraktor_dokumen_butiran_kdb_klasifikasiTolookup", fields: [kdb_klasifikasi], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "fk_kdb_klasifikasi")
+
+  @@index([kdb_dokumen_id], map: "fk_kdb_dokumen_id")
+  @@index([kdb_kategori_kesalahan], map: "fk_kdb_kategori_kesalahan")
+  @@index([kdb_klasifikasi], map: "fk_kdb_klasifikasi")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model projek {
+  projek_id           Int                  @id @default(autoincrement())
+  projek_nama         String               @db.VarChar(255)
+  projek_kod          String               @db.VarChar(255)
+  projek_skop         String               @db.Text
+  projek_kontraktor   Int
+  projek_mula         DateTime             @db.Date
+  projek_tamat        DateTime             @db.Date
+  projek_amaun        Decimal              @default(0.00) @db.Decimal(10, 2)
+  projek_status       Int
+  projek_nama_pic     String               @db.VarChar(255)
+  projek_emel_pic     String               @db.VarChar(255)
+  projek_kontakNo_pic String               @db.VarChar(50)
+  projek_createdBy    Int
+  projek_createdAt    DateTime             @db.Timestamp(0)
+  projek_updatedAt    DateTime             @default(now()) @db.Timestamp(0)
+  kontraktor_dokumen  kontraktor_dokumen[]
+  user                user                 @relation(fields: [projek_createdBy], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "fk_projek_createdBy")
+  kontraktor          kontraktor           @relation(fields: [projek_kontraktor], references: [kontraktor_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_projek_kontraktor")
+  lookup              lookup               @relation(fields: [projek_status], references: [lookupID], onDelete: NoAction, onUpdate: NoAction, map: "fk_projek_status")
+
+  @@index([projek_createdBy], map: "fk_projek_createdBy")
+  @@index([projek_kontraktor], map: "fk_projek_kontraktor")
+  @@index([projek_status], map: "fk_projek_status")
+}
+
+model survey_list {
+  data_id               Int     @id
+  survey_id             String  @default("0") @db.VarChar(255)
+  vehicle_number        String  @default("0") @db.VarChar(255)
+  vehicle_timein        String? @db.VarChar(255)
+  vehicle_timeout       String? @db.VarChar(255)
+  project_id            Int?
+  project_name          String? @db.VarChar(255)
+  project_eecode        String? @db.VarChar(255)
+  project_parker_type   String? @db.VarChar(255)
+  project_surveyor_name String? @db.VarChar(255)
+  ref_id                Int?
+  ref_type              String? @db.VarChar(255)
+  vehicle_status        String? @db.VarChar(255)
+  data_status           String? @db.VarChar(255)
+  created_by            String? @db.VarChar(255)
+  created_at            String? @db.VarChar(255)
+  updated_by            String? @db.VarChar(255)
+  updated_at            String? @db.VarChar(255)
 }

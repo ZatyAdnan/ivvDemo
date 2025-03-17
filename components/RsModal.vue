@@ -55,7 +55,7 @@ const props = defineProps({
   },
   overlayClose: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   height: {
     type: String,
@@ -117,14 +117,8 @@ watch(
               ></Icon>
             </div>
             <div class="modal-body">
-              <NuxtScrollbar
-                :style="{
-                  'max-height': height,
-                }"
-              >
-                <slot name="body"></slot>
-                <slot v-if="!$slots.body"></slot>
-              </NuxtScrollbar>
+              <slot name="body"></slot>
+              <slot v-if="!$slots.body"></slot>
             </div>
             <div v-if="!hideFooter" class="modal-footer">
               <slot name="footer"></slot>
