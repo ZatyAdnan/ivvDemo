@@ -118,132 +118,133 @@ onMounted(() => {
 </script>
 
 <template>
-  <Breadcrumb />
-  <div class="space-y-4">
-    <rs-card class="px-4 py-4">
-      <FormKit type="form" @submit="handleSubmit" :actions="false">
-        <!-- Maklumat Asas Projek -->
-        <div class="form-section">
-          <h3>Maklumat Asas</h3>
+  <div>
+    <Breadcrumb />
+    <div class="space-y-4">
+      <rs-card class="px-4 py-4">
+        <FormKit type="form" @submit="handleSubmit" :actions="false">
+          <!-- Maklumat Asas Projek -->
+          <div class="form-section">
+            <h3>Maklumat Asas</h3>
 
-          <FormKit
-            type="text"
-            name="projectName"
-            label="Nama Projek"
-            validation="required"
-            placeholder="Masukkan nama projek"
-          />
-
-          <FormKit
-            type="text"
-            name="projectCode"
-            label="Kod Projek"
-            validation="required"
-            placeholder="cth., PRJ-2024-001"
-          />
-
-          <FormKit
-            type="textarea"
-            name="description"
-            label="Skop Projek"
-            placeholder="Masukkan skop projek"
-            rows="4"
-          />
-        </div>
-
-        <!-- Butiran Projek -->
-        <div class="form-section">
-          <h3>Butiran Projek</h3>
-
-          <FormKit
-            type="select"
-            name="contractor"
-            label="Kontraktor"
-            validation="required"
-            placeholder="Pilih kontraktor"
-            :options="contractorOptions"
-          />
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormKit
-              type="date"
-              name="startDate"
-              label="Tarikh Mula"
-              validation="required"
-            />
-
-            <FormKit
-              type="date"
-              name="endDate"
-              label="Tarikh Jangka Siap"
-              validation="required"
-            />
-          </div>
-
-          <FormKit
-            type="select"
-            name="status"
-            label="Status Projek"
-            :options="statusOptions"
-          />
-
-          <FormKit
-            type="number"
-            name="budget"
-            label="Bajet (MYR)"
-            validation="min:0"
-            step="0.01"
-            placeholder="Masukkan bajet projek"
-          />
-        </div>
-
-        <!-- Maklumat Perhubungan -->
-        <div class="form-section">
-          <h3>Maklumat Perhubungan</h3>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <FormKit
               type="text"
-              name="projectManager"
-              label="Pengurus Projek"
+              name="projectName"
+              label="Nama Projek"
               validation="required"
-              placeholder="Masukkan nama pengurus projek"
+              placeholder="Masukkan nama projek"
             />
 
             <FormKit
-              type="email"
-              name="email"
-              label="Emel"
-              validation="required|email"
-              placeholder="Masukkan alamat emel"
+              type="text"
+              name="projectCode"
+              label="Kod Projek"
+              validation="required"
+              placeholder="cth., PRJ-2024-001"
             />
 
             <FormKit
-              type="tel"
-              name="phone"
-              label="No. Telefon"
-              placeholder="Masukkan nombor telefon"
+              type="textarea"
+              name="description"
+              label="Skop Projek"
+              placeholder="Masukkan skop projek"
+              rows="4"
             />
           </div>
-        </div>
 
-        <div class="form-actions">
-          <FormKit
-            type="submit"
-            :disabled="loading"
-            :label="loading ? 'Menghantar...' : 'Hantar'"
-            input-class="btn-submit"
-          />
-          <FormKit
-            type="button"
-            label="Batal"
-            input-class="btn-cancel"
-            @click="handleCancel"
-            :disabled="loading"
-          />
-        </div>
-      </FormKit>
-    </rs-card>
+          <!-- Butiran Projek -->
+          <div class="form-section">
+            <h3>Butiran Projek</h3>
+
+            <FormKit
+              type="select"
+              name="contractor"
+              label="Kontraktor"
+              validation="required"
+              placeholder="Pilih kontraktor"
+              :options="contractorOptions"
+            />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormKit
+                type="date"
+                name="startDate"
+                label="Tarikh Mula"
+                validation="required"
+              />
+
+              <FormKit
+                type="date"
+                name="endDate"
+                label="Tarikh Jangka Siap"
+                validation="required"
+              />
+            </div>
+
+            <FormKit
+              type="select"
+              name="status"
+              label="Status Projek"
+              :options="statusOptions"
+            />
+
+            <FormKit
+              type="number"
+              name="budget"
+              label="Bajet (MYR)"
+              validation="min:0"
+              step="0.01"
+              placeholder="Masukkan bajet projek"
+            />
+          </div>
+
+          <!-- Maklumat Perhubungan -->
+          <div class="form-section">
+            <h3>Maklumat Perhubungan</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <FormKit
+                type="text"
+                name="projectManager"
+                label="Pengurus Projek"
+                validation="required"
+                placeholder="Masukkan nama pengurus projek"
+              />
+
+              <FormKit
+                type="email"
+                name="email"
+                label="Emel"
+                validation="required|email"
+                placeholder="Masukkan alamat emel"
+              />
+
+              <FormKit
+                type="tel"
+                name="phone"
+                label="No. Telefon"
+                placeholder="Masukkan nombor telefon"
+              />
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <rs-button
+              label="Batal"
+              variant="outline"
+              @click="handleCancel"
+              :disabled="loading"
+            >
+              Batal
+            </rs-button>
+            <rs-button btn-type="submit" variant="primary" :disabled="loading">
+              <Icon class="mr-2 w-4 h-4" name="mdi:send" />
+              Hantar
+            </rs-button>
+          </div>
+        </FormKit>
+      </rs-card>
+    </div>
   </div>
 </template>
 
