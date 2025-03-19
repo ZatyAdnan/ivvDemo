@@ -5,10 +5,12 @@ definePageMeta({
   middleware: ["auth"], // Memastikan pengguna telah log masuk
 });
 
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { saveAs } from "file-saver"; // For saving files
 import * as XLSX from "xlsx"; // For Excel export
 import jsPDF from "jspdf"; // For PDF export
+import { useRoute } from "vue-router";
+import { useNuxtApp } from "#app";
 
 // Refs to handle the file and validation result
 const documentType = ref(null);
@@ -165,28 +167,87 @@ const isEditingDoc = ref(false); // Kawalan mod sunting untuk Maklumat Dokumen
 
 // Document information state
 const documentInfo = ref({
-  namaDeliverable: "SPESIFIKASI REKA BENTUK SISTEM (SDS) MODUL PENGURUSAN KESELAMATAN SUBMODUL FORENSIK",
-  idDokumen: "SDS-01",
-  versiDokumen: "1.0",
-  fasa: "REKA BENTUK",
-  produkKerja: "D-REKA BENTUK SISTEM",
-  bilMukaSurat: "150",
-  namaPenyemak: "Shariah Ibrahim, Prisilia",
-  tarikhSemakan: "7 Jan 2025 - 13 Jan 2025",
-  sesiSemakan: "1",
+  namaDeliverable: "",
+  idDokumen: "",
+  versiDokumen: "",
+  fasa: "",
+  produkKerja: "",
+  bilMukaSurat: "",
+  namaPenyemak: "",
+  tarikhSemakan: "",
+  sesiSemakan: "",
   bilKmTidakPatuh: "0"
 });
+
+const route = useRoute();
+const { $swal } = useNuxtApp();
+
+// Fetch document information
+const fetchDocumentInfo = async () => {
+  try {
+    const documentId = route.query.id;
+    if (!documentId) {
+      throw new Error('Document ID is required');
+    }
+
+    const response = await $fetch(`/api/projects/document/${documentId}/info`);
+    if (response.statusCode === 200) {
+      documentInfo.value = response.data;
+    } else {
+      throw new Error(response.message);
+    }
+  } catch (error) {
+    console.error('Error fetching document info:', error);
+    $swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Failed to load document information'
+    });
+  }
+};
+
+// Save document changes
+const saveDocChanges = async () => {
+  try {
+    const documentId = route.query.id;
+    if (!documentId) {
+      throw new Error('Document ID is required');
+    }
+
+    const response = await $fetch(`/api/projects/document/${documentId}/info`, {
+      method: 'PUT',
+      body: documentInfo.value
+    });
+
+    if (response.statusCode === 200) {
+      await $swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Document information updated successfully'
+      });
+      isEditingDoc.value = false;
+    } else {
+      throw new Error(response.message);
+    }
+  } catch (error) {
+    console.error('Error updating document info:', error);
+    $swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: error.message || 'Failed to update document information'
+    });
+  }
+};
 
 // Toggle document edit mode
 const toggleDocEdit = () => {
   isEditingDoc.value = !isEditingDoc.value;
 };
 
-// Save document changes
-const saveDocChanges = () => {
-  alert("Perubahan maklumat dokumen berjaya disimpan!");
-  toggleDocEdit();
-};
+// Fetch document info when component mounts
+onMounted(() => {
+  fetchDocumentInfo();
+});
 
 // Edit Checklist
 const toggleEdit = () => {
@@ -262,18 +323,31 @@ const handleSubmit = () => {
           <h3 class="text-xl font-bold text-gray-800">Maklumat Dokumen</h3>
           <div class="flex gap-2">
             <rs-button
+              v-if="!isEditingDoc"
               class="text-sm"
               @click="toggleDocEdit"
             >
-              {{ isEditingDoc ? "Selesai Menyunting" : "Sunting Maklumat" }}
+              <Icon name="material-symbols:edit" class="mr-2"></Icon>
+              Kemaskini
             </rs-button>
-            <rs-button
-              v-if="isEditingDoc"
-              class="text-sm bg-blue-600"
-              @click="saveDocChanges"
-            >
-              Simpan
-            </rs-button>
+            <div v-else class="flex gap-2">
+              <rs-button
+                variant="secondary"
+                class="text-sm"
+                @click="toggleDocEdit"
+              >
+                <Icon name="material-symbols:close" class="mr-2"></Icon>
+                Batal
+              </rs-button>
+              <rs-button
+                variant="primary"
+                class="text-sm"
+                @click="saveDocChanges"
+              >
+                <Icon name="material-symbols:save" class="mr-2"></Icon>
+                Simpan
+              </rs-button>
+            </div>
           </div>
         </div>
       </template>
@@ -287,6 +361,7 @@ const handleSubmit = () => {
                 v-model="documentInfo.namaDeliverable"
                 class="w-full border rounded-lg px-2 py-1"
                 rows="3"
+                readonly
               ></textarea>
             </div>
             <p v-else>{{ documentInfo.namaDeliverable }}</p>
@@ -298,6 +373,7 @@ const handleSubmit = () => {
                 type="text"
                 v-model="documentInfo.idDokumen"
                 class="w-full border rounded-lg px-2 py-1"
+                readonly
               />
             </div>
             <p v-else>{{ documentInfo.idDokumen }}</p>
@@ -309,6 +385,7 @@ const handleSubmit = () => {
                 type="text"
                 v-model="documentInfo.versiDokumen"
                 class="w-full border rounded-lg px-2 py-1"
+                readonly
               />
             </div>
             <p v-else>{{ documentInfo.versiDokumen }}</p>
@@ -320,6 +397,7 @@ const handleSubmit = () => {
                 type="text"
                 v-model="documentInfo.fasa"
                 class="w-full border rounded-lg px-2 py-1"
+                placeholder="Masukkan fasa"
               />
             </div>
             <p v-else>{{ documentInfo.fasa }}</p>
@@ -331,6 +409,7 @@ const handleSubmit = () => {
                 type="text"
                 v-model="documentInfo.produkKerja"
                 class="w-full border rounded-lg px-2 py-1"
+                placeholder="Masukkan produk kerja"
               />
             </div>
             <p v-else>{{ documentInfo.produkKerja }}</p>
@@ -342,6 +421,8 @@ const handleSubmit = () => {
                 type="number"
                 v-model="documentInfo.bilMukaSurat"
                 class="w-full border rounded-lg px-2 py-1"
+                min="0"
+                placeholder="Masukkan bilangan muka surat"
               />
             </div>
             <p v-else>{{ documentInfo.bilMukaSurat }}</p>
@@ -353,6 +434,7 @@ const handleSubmit = () => {
                 type="text"
                 v-model="documentInfo.namaPenyemak"
                 class="w-full border rounded-lg px-2 py-1"
+                readonly
               />
             </div>
             <p v-else>{{ documentInfo.namaPenyemak }}</p>
@@ -361,7 +443,7 @@ const handleSubmit = () => {
             <p class="font-medium">Tarikh Semakan:</p>
             <div v-if="isEditingDoc">
               <input
-                type="text"
+                type="date"
                 v-model="documentInfo.tarikhSemakan"
                 class="w-full border rounded-lg px-2 py-1"
               />
@@ -375,6 +457,8 @@ const handleSubmit = () => {
                 type="number"
                 v-model="documentInfo.sesiSemakan"
                 class="w-full border rounded-lg px-2 py-1"
+                min="1"
+                placeholder="Masukkan sesi semakan"
               />
             </div>
             <p v-else>{{ documentInfo.sesiSemakan }}</p>
@@ -386,6 +470,7 @@ const handleSubmit = () => {
                 type="number"
                 v-model="documentInfo.bilKmTidakPatuh"
                 class="w-full border rounded-lg px-2 py-1"
+                readonly
               />
             </div>
             <p v-else>{{ documentInfo.bilKmTidakPatuh }}</p>

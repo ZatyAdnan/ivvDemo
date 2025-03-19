@@ -51,6 +51,9 @@ export default defineEventHandler(async (event) => {
           },
           orderBy: {
             kontraktorDoc_version: 'desc'
+          },
+          include: {
+            lookup: true // Include the lookup data for status
           }
         }
       }
@@ -66,10 +69,10 @@ export default defineEventHandler(async (event) => {
     // Get document statistics
     const documentStats = {
       totalDocuments: documentType.kontraktor_dokumen.length,
-      pendingDocuments: documentType.kontraktor_dokumen.filter(doc => doc.kontraktorDoc_status === 1).length,
+      pendingDocuments: documentType.kontraktor_dokumen.filter(doc => doc.kontraktorDoc_status === 35).length, // Status 35 = "Dalam Proses"
       lateDocuments: documentType.kontraktor_dokumen.filter(doc => {
         const dueDate = new Date(doc.kontraktorDoc_end_semakan);
-        return dueDate < new Date() && doc.kontraktorDoc_status !== 3;
+        return dueDate < new Date() && doc.kontraktorDoc_status === 35; // Only count late documents that are still "Dalam Proses"
       }).length
     };
 
@@ -80,7 +83,7 @@ export default defineEventHandler(async (event) => {
       namaDokumen: doc.kontraktorDoc_name,
       tarikhSemakan: doc.kontraktorDoc_end_semakan ? new Date(doc.kontraktorDoc_end_semakan).toLocaleDateString('ms-MY') : '-',
       skor: doc.kontraktorDoc_skor || 0,
-      status: doc.kontraktorDoc_status === 1 ? 'Dalam Proses' : 'Lengkap',
+      status: doc.lookup?.lookupValue || 'Tidak Diketahui', // Use the actual status from lookup table
       action: "" // Empty action field for the table component
     }));
 

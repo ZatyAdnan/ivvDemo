@@ -25,21 +25,21 @@ const docTypes = ref([]);
 // Fetch document types
 const fetchDocumentTypes = async () => {
   try {
-    const response = await $fetch('/api/dokumen');
+    const response = await $fetch("/api/dokumen");
     if (response.statusCode === 200) {
-      docTypes.value = response.data.map(type => ({
+      docTypes.value = response.data.map((type) => ({
         value: type.id,
-        label: type.name
+        label: type.name,
       }));
     } else {
       throw new Error(response.message);
     }
   } catch (error) {
-    console.error('Error fetching document types:', error);
+    console.error("Error fetching document types:", error);
     $swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: 'Failed to load document types'
+      icon: "error",
+      title: "Error",
+      text: "Failed to load document types",
     });
   }
 };
@@ -49,18 +49,21 @@ const handleFileChange = async (event) => {
   const selectedFile = event.target.files[0];
   if (selectedFile) {
     // Validate file type
-    const allowedTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    const allowedTypes = [
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
     if (!allowedTypes.includes(selectedFile.type)) {
       $swal.fire({
-        icon: 'error',
-        title: 'Invalid File Type',
-        text: 'Please upload only PDF or DOCX files'
+        icon: "error",
+        title: "Invalid File Type",
+        text: "Please upload only PDF or DOCX files",
       });
-      event.target.value = ''; // Clear the file input
+      event.target.value = ""; // Clear the file input
       documentFile.value = null;
       return;
     }
-    
+
     // Convert file to base64
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -68,7 +71,7 @@ const handleFileChange = async (event) => {
         name: selectedFile.name,
         type: selectedFile.type,
         size: selectedFile.size,
-        base64: e.target.result
+        base64: e.target.result,
       };
     };
     reader.readAsDataURL(selectedFile);
@@ -82,18 +85,18 @@ const uploadDocument = async () => {
   try {
     if (!documentType.value) {
       $swal.fire({
-        icon: 'warning',
-        title: 'Missing Information',
-        text: 'Please select a document type'
+        icon: "warning",
+        title: "Missing Information",
+        text: "Please select a document type",
       });
       return;
     }
 
     if (!documentFile.value) {
       $swal.fire({
-        icon: 'warning',
-        title: 'Missing File',
-        text: 'Please select a file to upload'
+        icon: "warning",
+        title: "Missing File",
+        text: "Please select a file to upload",
       });
       return;
     }
@@ -104,33 +107,34 @@ const uploadDocument = async () => {
     const requestBody = {
       file: documentFile.value,
       projectId: route.query.projectId,
-      documentTypeId: documentType.value
+      documentTypeId: documentType.value,
     };
 
     // Upload file
-    const response = await $fetch('/api/projects/document/upload', {
-      method: 'POST',
-      body: requestBody
+    const response = await $fetch("/api/projects/document/upload", {
+      method: "POST",
+      body: requestBody,
     });
 
     if (response.statusCode === 201) {
       await $swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: 'Document uploaded successfully'
+        icon: "success",
+        title: "Success",
+        text: "Document uploaded successfully",
       });
-      
+
       // Redirect back to document list
-      navigateTo(`/ivv/projects/document/${documentType.value}?projectId=${route.query.projectId}`);
+      // navigateTo(`/ivv/projects/document/${documentType.value}?projectId=${route.query.projectId}`);
+      dummyValidation();
     } else {
       throw new Error(response.message);
     }
   } catch (error) {
-    console.error('Error uploading document:', error);
+    console.error("Error uploading document:", error);
     $swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: error.message || 'Failed to upload document'
+      icon: "error",
+      title: "Error",
+      text: error.message || "Failed to upload document",
     });
   } finally {
     isLoading.value = false;
@@ -171,7 +175,7 @@ Dan transaksi fungsi permohonan visa tersebut perlu menyentuh semua lifeline yan
         classification: "MAJOR",
         isComplete: false,
         errorCategory: "BAHARU (NEW) TIDAK BETUL (INCORRECT)",
-        notes: ""
+        notes: "",
       },
       {
         section: "3.5. Reka Bentuk Fungsi Sistem",
@@ -197,7 +201,7 @@ v. lifeline Pangkalan Data`,
         classification: "Baharu (New)",
         isComplete: false,
         errorCategory: "Tidak Betul (Incorrect)",
-        notes: ""
+        notes: "",
       },
     ],
   };
@@ -213,8 +217,8 @@ const toggleEdit = () => {
 
 // Save checklist to Excel
 const exportToExcel = () => {
-  const fileUrl = '/Borang_Maklumbalas.xlsx'; // Path to the file in the public folder
-  saveAs(fileUrl, 'Borang_Maklumbalas.xlsx');
+  const fileUrl = "/Borang_Maklumbalas.xlsx"; // Path to the file in the public folder
+  saveAs(fileUrl, "Borang_Maklumbalas.xlsx");
 };
 
 // Save changes (if necessary)
@@ -232,7 +236,7 @@ const addNewRow = () => {
     classification: "",
     isComplete: false,
     errorCategory: "",
-    notes: ""
+    notes: "",
   });
 };
 
@@ -247,25 +251,28 @@ const columnNames = ref({
   referenceCode: "Kod Rujukan KM",
   classification: "Klasifikasi Penemuan",
   errorCategory: "Kategori Kesalahan",
-  notes: "Catatan"
+  notes: "Catatan",
 });
 
 const saveColumnNames = () => {
   alert("Column names saved successfully!");
 };
 
-const errorCategories = ["BAHARU (NEW) TIDAK BETUL (INCORRECT)", "Tidak Betul (Incorrect)"];
+const errorCategories = [
+  "BAHARU (NEW) TIDAK BETUL (INCORRECT)",
+  "Tidak Betul (Incorrect)",
+];
 const classifications = ["MAJOR", "MINOR"];
 
 // Add these refs
 const showModal = ref(false);
 const projectForm = ref({
-  namaProjek: '',
-  kodProjek: '',
-  tarikhMula: '',
-  tarikhTamat: '',
-  statusProjek: '',
-  pemilikProjek: ''
+  namaProjek: "",
+  kodProjek: "",
+  tarikhMula: "",
+  tarikhTamat: "",
+  statusProjek: "",
+  pemilikProjek: "",
 });
 
 // Add these methods
@@ -277,12 +284,12 @@ const closeModal = () => {
   showModal.value = false;
   // Reset form
   projectForm.value = {
-    namaProjek: '',
-    kodProjek: '',
-    tarikhMula: '',
-    tarikhTamat: '',
-    statusProjek: '',
-    pemilikProjek: ''
+    namaProjek: "",
+    kodProjek: "",
+    tarikhMula: "",
+    tarikhTamat: "",
+    statusProjek: "",
+    pemilikProjek: "",
   };
 };
 
@@ -294,22 +301,17 @@ const submitProject = async () => {
     //   method: 'POST',
     //   body: projectForm.value
     // });
-    
-    alert('Projek berjaya ditambah!');
+
+    alert("Projek berjaya ditambah!");
     closeModal();
     // Optionally refresh the projects list
   } catch (error) {
-    console.error('Error adding project:', error);
-    alert('Ralat semasa menambah projek');
+    console.error("Error adding project:", error);
+    alert("Ralat semasa menambah projek");
   }
 };
 
-const statusOptions = [
-  'Aktif',
-  'Selesai',
-  'Ditangguhkan',
-  'Dibatalkan'
-];
+const statusOptions = ["Aktif", "Selesai", "Ditangguhkan", "Dibatalkan"];
 </script>
 
 <template>
@@ -324,11 +326,17 @@ const statusOptions = [
 
     <!-- Project Modal -->
     <Teleport to="body">
-      <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div
+        v-if="showModal"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      >
         <div class="bg-white rounded-lg p-6 w-full max-w-2xl">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-xl font-bold">Tambah Projek Baharu</h2>
-            <button @click="closeModal" class="text-gray-500 hover:text-gray-700">
+            <button
+              @click="closeModal"
+              class="text-gray-500 hover:text-gray-700"
+            >
               <Icon name="material-symbols:close" size="24"></Icon>
             </button>
           </div>
@@ -341,7 +349,7 @@ const statusOptions = [
                 label="Nama Projek"
                 validation="required"
                 :validation-messages="{
-                  required: 'Nama projek diperlukan'
+                  required: 'Nama projek diperlukan',
                 }"
               />
 
@@ -351,7 +359,7 @@ const statusOptions = [
                 label="Kod Projek"
                 validation="required"
                 :validation-messages="{
-                  required: 'Kod projek diperlukan'
+                  required: 'Kod projek diperlukan',
                 }"
               />
 
@@ -361,7 +369,7 @@ const statusOptions = [
                 label="Tarikh Mula"
                 validation="required"
                 :validation-messages="{
-                  required: 'Tarikh mula diperlukan'
+                  required: 'Tarikh mula diperlukan',
                 }"
               />
 
@@ -371,7 +379,7 @@ const statusOptions = [
                 label="Tarikh Tamat"
                 validation="required"
                 :validation-messages="{
-                  required: 'Tarikh tamat diperlukan'
+                  required: 'Tarikh tamat diperlukan',
                 }"
               />
 
@@ -382,7 +390,7 @@ const statusOptions = [
                 label="Status Projek"
                 validation="required"
                 :validation-messages="{
-                  required: 'Status projek diperlukan'
+                  required: 'Status projek diperlukan',
                 }"
               />
 
@@ -392,7 +400,7 @@ const statusOptions = [
                 label="Pemilik Projek"
                 validation="required"
                 :validation-messages="{
-                  required: 'Pemilik projek diperlukan'
+                  required: 'Pemilik projek diperlukan',
                 }"
               />
             </div>
@@ -414,7 +422,9 @@ const statusOptions = [
     <!-- File Upload Card -->
     <rs-card class="mb-6 shadow-lg rounded-lg">
       <template #header>
-        <h2 class="text-xl font-bold text-gray-800">Pengimbas Dokumen Kendiri</h2>
+        <h2 class="text-xl font-bold text-gray-800">
+          Pengimbas Dokumen Kendiri
+        </h2>
       </template>
 
       <template #body>
@@ -427,7 +437,7 @@ const statusOptions = [
             :options="docTypes"
             validation="required"
             :validation-messages="{
-              required: 'Sila pilih jenis dokumen'
+              required: 'Sila pilih jenis dokumen',
             }"
             class="w-full"
           />
@@ -438,7 +448,7 @@ const statusOptions = [
             accept=".pdf,.docx"
             @change="handleFileChange"
             :validation-messages="{
-              required: 'Sila pilih dokumen untuk dimuat naik'
+              required: 'Sila pilih dokumen untuk dimuat naik',
             }"
             class="w-full"
           />
@@ -451,8 +461,12 @@ const statusOptions = [
             :loading="isLoading"
             :disabled="isLoading"
           >
-            <Icon name="material-symbols:check" class="mr-2" title="Padam"></Icon>
-            {{ isLoading ? 'Sedang Memuat Naik...' : 'Sahkan Dokumen' }}
+            <Icon
+              name="material-symbols:check"
+              class="mr-2"
+              title="Padam"
+            ></Icon>
+            {{ isLoading ? "Sedang Memuat Naik..." : "Sahkan Dokumen" }}
           </rs-button>
         </div>
       </template>
@@ -469,140 +483,200 @@ const statusOptions = [
         <div class="mb-6">
           <h4 class="font-medium text-gray-700">Meter Kesihatan:</h4>
           <div class="flex items-center space-x-4 mt-2">
-            <span class="text-lg font-semibold">{{ validationResult.score }}% Selesai</span>
+            <span class="text-lg font-semibold"
+              >{{ validationResult.score }}% Selesai</span
+            >
             <div class="w-full h-4 bg-gray-300 rounded-full overflow-hidden">
               <div
                 class="h-4 rounded-full"
-                :style="{ width: validationResult.score + '%', backgroundColor: validationResult.color }"
+                :style="{
+                  width: validationResult.score + '%',
+                  backgroundColor: validationResult.color,
+                }"
               ></div>
             </div>
           </div>
         </div>
 
         <!-- Readiness Checklist -->
-        <div >
-          <h4 class="font-medium mb-4 flex justify-between items-center text-gray-700">
+        <div>
+          <h4
+            class="font-medium mb-4 flex justify-between items-center text-gray-700"
+          >
             Senarai Semak Kesediaan:
-            <rs-button v-if="!isEditing"
-              class="text-sm"
-              @click="toggleEdit"
-            >
+            <rs-button v-if="!isEditing" class="text-sm" @click="toggleEdit">
               {{ "Edit Senarai Semak" }}
             </rs-button>
           </h4>
           <!-- Editable or View-Only Checklist -->
           <div v-if="isEditing">
-           <rs-card class="p-4">
-            <div class="mb-4">
-              <h5 class="font-medium text-gray-700 ml-6 mb-2">Edit Checklist:</h5>
-              <div class="overflow-x-auto">
-                <div class="max-h-150 overflow-y-auto">
-                  <table class="min-w-full bg-white">
-                    <thead>
-                      <tr>
-                        <th class="py-2 px-4 border-b">{{ columnNames.section }}</th>
-                        <th class="py-2 px-4 border-b">{{ columnNames.details }}</th>
-                        <th class="py-2 px-4 border-b">{{ columnNames.referenceCode }}</th>
-                        <th class="py-2 px-4 border-b">{{ columnNames.classification }}</th>
-                        <th class="py-2 px-4 border-b">{{ columnNames.errorCategory }}</th>
-                        <th class="py-2 px-4 border-b">{{ columnNames.notes }}</th>
-                        <th class="py-2 px-4 border-b">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="(item, index) in validationResult.checklist" :key="index">
-                        <td class="py-2 px-4 border-b">
-                          <input
-                            type="text"
-                            class="border rounded-lg px-2 py-1 w-full"
-                            v-model="item.section"
-                          />
-                        </td>
-                        <td class="py-2 px-4 border-b">
-                          <textarea
-                            class="border rounded-lg px-2 py-1 w-full h-32"
-                            v-model="item.details"
-                          ></textarea>
-                        </td>
-                        <td class="py-2 px-4 border-b">
-                          <input
-                            type="text"
-                            class="border rounded-lg px-2 py-1 w-full"
-                            v-model="item.referenceCode"
-                          />
-                        </td>
-                        <td class="py-2 px-4 border-b">
-                          <select
-                            class="border rounded-lg px-2 py-1 w-full"
-                            v-model="item.classification"
-                          >
-                            <option v-for="option in classifications" :key="option" :value="option">
-                              {{ option }}
-                            </option>
-                          </select>
-                        </td>
-                        <td class="py-2 px-4 border-b">
-                          <select
-                            class="border rounded-lg px-2 py-1 w-full"
-                            v-model="item.errorCategory"
-                          >
-                            <option v-for="option in errorCategories" :key="option" :value="option">
-                              {{ option }}
-                            </option>
-                          </select>
-                        </td>
-                        <td class="py-2 px-4 border-b">
-                          <input
-                            type="text"
-                            class="border rounded-lg px-2 py-1 w-full"
-                            v-model="item.notes"
-                          />
-                        </td>
-                        <td class="py-2 px-4 border-b">
-                          <rs-button class="text-red-500" @click="deleteRow(index)">
-                            <Icon name="material-symbols:delete" class="mr-2"></Icon>
-                            Padam
-                          </rs-button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+            <rs-card class="p-4">
+              <div class="mb-4">
+                <h5 class="font-medium text-gray-700 ml-6 mb-2">
+                  Edit Checklist:
+                </h5>
+                <div class="overflow-x-auto">
+                  <div class="max-h-150 overflow-y-auto">
+                    <table class="min-w-full bg-white">
+                      <thead>
+                        <tr>
+                          <th class="py-2 px-4 border-b">
+                            {{ columnNames.section }}
+                          </th>
+                          <th class="py-2 px-4 border-b">
+                            {{ columnNames.details }}
+                          </th>
+                          <th class="py-2 px-4 border-b">
+                            {{ columnNames.referenceCode }}
+                          </th>
+                          <th class="py-2 px-4 border-b">
+                            {{ columnNames.classification }}
+                          </th>
+                          <th class="py-2 px-4 border-b">
+                            {{ columnNames.errorCategory }}
+                          </th>
+                          <th class="py-2 px-4 border-b">
+                            {{ columnNames.notes }}
+                          </th>
+                          <th class="py-2 px-4 border-b">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          v-for="(item, index) in validationResult.checklist"
+                          :key="index"
+                        >
+                          <td class="py-2 px-4 border-b">
+                            <input
+                              type="text"
+                              class="border rounded-lg px-2 py-1 w-full"
+                              v-model="item.section"
+                            />
+                          </td>
+                          <td class="py-2 px-4 border-b">
+                            <textarea
+                              class="border rounded-lg px-2 py-1 w-full h-32"
+                              v-model="item.details"
+                            ></textarea>
+                          </td>
+                          <td class="py-2 px-4 border-b">
+                            <input
+                              type="text"
+                              class="border rounded-lg px-2 py-1 w-full"
+                              v-model="item.referenceCode"
+                            />
+                          </td>
+                          <td class="py-2 px-4 border-b">
+                            <select
+                              class="border rounded-lg px-2 py-1 w-full"
+                              v-model="item.classification"
+                            >
+                              <option
+                                v-for="option in classifications"
+                                :key="option"
+                                :value="option"
+                              >
+                                {{ option }}
+                              </option>
+                            </select>
+                          </td>
+                          <td class="py-2 px-4 border-b">
+                            <select
+                              class="border rounded-lg px-2 py-1 w-full"
+                              v-model="item.errorCategory"
+                            >
+                              <option
+                                v-for="option in errorCategories"
+                                :key="option"
+                                :value="option"
+                              >
+                                {{ option }}
+                              </option>
+                            </select>
+                          </td>
+                          <td class="py-2 px-4 border-b">
+                            <input
+                              type="text"
+                              class="border rounded-lg px-2 py-1 w-full"
+                              v-model="item.notes"
+                            />
+                          </td>
+                          <td class="py-2 px-4 border-b">
+                            <rs-button
+                              class="text-red-500"
+                              @click="deleteRow(index)"
+                            >
+                              <Icon
+                                name="material-symbols:delete"
+                                class="mr-2"
+                              ></Icon>
+                              Padam
+                            </rs-button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="flex justify-center mt-4">
+                  <rs-button class="w-full py-4" @click="addNewRow">
+                    <Icon
+                      name="material-symbols:add"
+                      class="mr-2"
+                      title="Tambah"
+                    ></Icon>
+                    Tambah Baris Baharu
+                  </rs-button>
                 </div>
               </div>
-              <div class="flex justify-center mt-4">
-                <rs-button class="w-full py-4" @click="addNewRow">
-                  <Icon name="material-symbols:add" class="mr-2" title="Tambah"></Icon>
-                  Tambah Baris Baharu
+              <div class="flex justify-end mt-4">
+                <rs-button @click="saveChanges">
+                  <Icon
+                    name="material-symbols:save"
+                    class="mr-2"
+                    title="Simpan"
+                  ></Icon>
+                  Simpan Perubahan
                 </rs-button>
               </div>
-            </div>
-            <div class="flex justify-end mt-4">
-              <rs-button @click="saveChanges">
-                <Icon name="material-symbols:save" class="mr-2" title="Simpan"></Icon>
-                Simpan Perubahan
-              </rs-button>
-            </div>
-           </rs-card>
+            </rs-card>
           </div>
           <div v-else class="overflow-x-auto">
             <div class="max-h-150 overflow-y-auto">
               <table class="min-w-full bg-white">
                 <thead>
                   <tr>
-                    <th class="py-2 px-4 border-b">{{ columnNames.section }}</th>
-                    <th class="py-2 px-4 border-b">{{ columnNames.details }}</th>
-                    <th class="py-2 px-4 border-b">{{ columnNames.referenceCode }}</th>
-                    <th class="py-2 px-4 border-b">{{ columnNames.classification }}</th>
-                    <th class="py-2 px-4 border-b">{{ columnNames.errorCategory }}</th>
+                    <th class="py-2 px-4 border-b">
+                      {{ columnNames.section }}
+                    </th>
+                    <th class="py-2 px-4 border-b">
+                      {{ columnNames.details }}
+                    </th>
+                    <th class="py-2 px-4 border-b">
+                      {{ columnNames.referenceCode }}
+                    </th>
+                    <th class="py-2 px-4 border-b">
+                      {{ columnNames.classification }}
+                    </th>
+                    <th class="py-2 px-4 border-b">
+                      {{ columnNames.errorCategory }}
+                    </th>
                     <th class="py-2 px-4 border-b">{{ columnNames.notes }}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(item, index) in validationResult.checklist" :key="index">
+                  <tr
+                    v-for="(item, index) in validationResult.checklist"
+                    :key="index"
+                  >
                     <td class="py-2 px-4 border-b">{{ item.section }}</td>
-                    <td class="py-2 px-4 border-b whitespace-pre-line">{{ item.details }}</td>
+                    <td class="py-2 px-4 border-b whitespace-pre-line">
+                      {{ item.details }}
+                    </td>
                     <td class="py-2 px-4 border-b">{{ item.referenceCode }}</td>
-                    <td class="py-2 px-4 border-b">{{ item.classification }}</td>
+                    <td class="py-2 px-4 border-b">
+                      {{ item.classification }}
+                    </td>
                     <td class="py-2 px-4 border-b">{{ item.errorCategory }}</td>
                     <td class="py-2 px-4 border-b">{{ item.notes }}</td>
                   </tr>
