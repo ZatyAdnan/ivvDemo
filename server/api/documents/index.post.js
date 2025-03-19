@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
       data: {
         dokumen_name: body.name,
         dokumen_km: body.km,
-        dokumen_status: body.status || 'PENDING'
+        dokumen_status: body.status || 'ACTIVE'
       }
     });
 

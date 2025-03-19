@@ -5,15 +5,142 @@ definePageMeta({
   middleware: ["auth"], // Ensure user is logged in
 });
 
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { saveAs } from "file-saver"; // For saving files
 import * as XLSX from "xlsx"; // For Excel export
 import jsPDF from "jspdf"; // For PDF export
+import { useRoute } from "nuxt/app";
+import { useNuxtApp } from "nuxt/app";
+
+const route = useRoute();
+const { $swal } = useNuxtApp();
 
 // Refs to handle the file and validation result
 const documentType = ref(null);
 const documentFile = ref(null); // Stores the selected file
 const validationResult = ref(null); // Stores the validation result
+const isLoading = ref(false);
+const docTypes = ref([]);
+
+// Fetch document types
+const fetchDocumentTypes = async () => {
+  try {
+    const response = await $fetch('/api/dokumen');
+    if (response.statusCode === 200) {
+      docTypes.value = response.data.map(type => ({
+        value: type.id,
+        label: type.name
+      }));
+    } else {
+      throw new Error(response.message);
+    }
+  } catch (error) {
+    console.error('Error fetching document types:', error);
+    $swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Failed to load document types'
+    });
+  }
+};
+
+// Handle file selection
+const handleFileChange = async (event) => {
+  const selectedFile = event.target.files[0];
+  if (selectedFile) {
+    // Validate file type
+    const allowedTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowedTypes.includes(selectedFile.type)) {
+      $swal.fire({
+        icon: 'error',
+        title: 'Invalid File Type',
+        text: 'Please upload only PDF or DOCX files'
+      });
+      event.target.value = ''; // Clear the file input
+      documentFile.value = null;
+      return;
+    }
+    
+    // Convert file to base64
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      documentFile.value = {
+        name: selectedFile.name,
+        type: selectedFile.type,
+        size: selectedFile.size,
+        base64: e.target.result
+      };
+    };
+    reader.readAsDataURL(selectedFile);
+  } else {
+    documentFile.value = null;
+  }
+};
+
+// Handle document upload
+const uploadDocument = async () => {
+  try {
+    if (!documentType.value) {
+      $swal.fire({
+        icon: 'warning',
+        title: 'Missing Information',
+        text: 'Please select a document type'
+      });
+      return;
+    }
+
+    if (!documentFile.value) {
+      $swal.fire({
+        icon: 'warning',
+        title: 'Missing File',
+        text: 'Please select a file to upload'
+      });
+      return;
+    }
+
+    isLoading.value = true;
+
+    // Prepare the request body
+    const requestBody = {
+      file: documentFile.value,
+      projectId: route.query.projectId,
+      documentTypeId: documentType.value
+    };
+
+    // Upload file
+    const response = await $fetch('/api/projects/document/upload', {
+      method: 'POST',
+      body: requestBody
+    });
+
+    if (response.statusCode === 201) {
+      await $swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Document uploaded successfully'
+      });
+      
+      // Redirect back to document list
+      navigateTo(`/ivv/projects/document/${documentType.value}?projectId=${route.query.projectId}`);
+    } else {
+      throw new Error(response.message);
+    }
+  } catch (error) {
+    console.error('Error uploading document:', error);
+    $swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: error.message || 'Failed to upload document'
+    });
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+// Fetch document types on component mount
+onMounted(() => {
+  fetchDocumentTypes();
+});
 
 // Dummy validation logic
 const dummyValidation = () => {
@@ -76,36 +203,6 @@ v. lifeline Pangkalan Data`,
   };
 };
 
-const handleFileChange = async (event) => {
-
-    const selectedFile = event.target.files[0];
-    console.log("documentFile:", selectedFile);
-
-    if (selectedFile) {
-        documentFile.value = selectedFile;
-        console.log("Selected file:", selectedFile.name); // Debugging: Log the file name
-    } else {
-        documentFile.value = null; // Reset if no file is selected
-    }
-};
-
-// Handle document upload
-const uploadDocument = () => {
-    
-  if (!documentType.value) {
-    alert("Please select a document type.");
-    return;
-  } 
-  // Check if a file is selected
-  if (!documentFile.value) {
-    alert("Please select a file to upload.");
-    return;
-  } 
-   // Simulate file upload and validation
-  console.log("Uploaded document:", documentFile.value.name);
-  dummyValidation();
-};
-
 // Track the editable state
 const isEditing = ref(false); // Controls edit mode
 
@@ -143,15 +240,6 @@ const addNewRow = () => {
 const deleteRow = (index) => {
   validationResult.value.checklist.splice(index, 1);
 };
-
-const docType = [
-    "URS - Spesifikasi Keperluan Pengguna",
-    "SRS - Spesifikasi Keperluan Sistem",
-    "SDS - Spesifikasi Reka Bentuk Sistem",
-    "SDD - Spesifikasi Reka Bentuk Data",
-    "Manual Pengguna",
-    "Skrip Ujian"
-];
 
 const columnNames = ref({
   section: "Lokasi (Muka Surat / Seksyen)",
@@ -336,8 +424,11 @@ const statusOptions = [
             v-model="documentType"
             label="Jenis Dokumen"
             placeholder="Pilih Jenis Dokumen"
-            :options="docType"
+            :options="docTypes"
             validation="required"
+            :validation-messages="{
+              required: 'Sila pilih jenis dokumen'
+            }"
             class="w-full"
           />
           <FormKit
@@ -345,7 +436,10 @@ const statusOptions = [
             id="document"
             label="Muat Naik Dokumen"
             accept=".pdf,.docx"
-            @change="(e) => handleFileChange(e)"
+            @change="handleFileChange"
+            :validation-messages="{
+              required: 'Sila pilih dokumen untuk dimuat naik'
+            }"
             class="w-full"
           />
         </div>
@@ -353,10 +447,12 @@ const statusOptions = [
         <!-- Upload Button -->
         <div class="flex justify-end mt-4">
           <rs-button
-            @click.prevent="uploadDocument"
+            @click="uploadDocument"
+            :loading="isLoading"
+            :disabled="isLoading"
           >
-          <Icon name="material-symbols:check" class="mr-2" title="Padam"></Icon>
-            Sahkan Dokumen
+            <Icon name="material-symbols:check" class="mr-2" title="Padam"></Icon>
+            {{ isLoading ? 'Sedang Memuat Naik...' : 'Sahkan Dokumen' }}
           </rs-button>
         </div>
       </template>

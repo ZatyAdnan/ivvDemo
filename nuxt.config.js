@@ -1,6 +1,6 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
-  ssr:false,
+  ssr: false,
   runtimeConfig: {
     auth: {
       secretAccess: process.env.NUXT_ACCESS_TOKEN_SECRET,
@@ -23,8 +23,8 @@ export default defineNuxtConfig({
   app: {
     pageTransition: { name: "page", mode: "out-in" },
   },
-  vite:{
-    server:{
+  vite: {
+    server: {
       watch: {
         usePolling: true,
         interval: 1000,
@@ -542,6 +542,9 @@ export default defineNuxtConfig({
     headers: false,
   },
   routeRules: {
+    "/api/projects/document/upload": {
+      requestSizeLimiter: false,
+    },
     "/api/devtool/**": {
       security: {
         xssValidator: false,
